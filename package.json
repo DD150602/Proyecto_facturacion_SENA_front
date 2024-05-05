@@ -1,6 +1,5 @@
 {
   "name": "proyecto_facturacion_sena_front",
-  "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -9,6 +8,22 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DD150602/Proyecto_facturacion_SENA_front.git"
+  },
+  "keywords": [
+    "frontend",
+    "react",
+    "vite",
+    "vitejs"
+  ],
+  "author": "DD150602",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DD150602/Proyecto_facturacion_SENA_front/issues"
+  },
+  "homepage": "https://github.com/DD150602/Proyecto_facturacion_SENA_front#readme",
   "dependencies": {
     "axios": "1.6.8",
     "react": "18.2.0",
