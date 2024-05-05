@@ -25,9 +25,15 @@
   },
   "homepage": "https://github.com/DD150602/Proyecto_facturacion_SENA_front#readme",
   "dependencies": {
+    "@emotion/react": "11.11.4",
+    "@emotion/styled": "11.11.5",
+    "@mui/material": "5.15.16",
     "axios": "1.6.8",
+    "dayjs": "1.11.11",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-router-dom": "6.23.0",
+    "sweetalert2": "11.10.8"
   },
   "devDependencies": {
     "@types/react": "18.2.66",
