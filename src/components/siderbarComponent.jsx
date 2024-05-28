@@ -72,8 +72,8 @@ function Sidebar() {
                                         transition={{ duration: 0.4 }}
                                         whileHover={{ scale: 1.08 }}
                                     >
-                                        <Link to="#" className="font-medium text-sm text-gray-900 py-2.5 px-4 rounded-lg flex items-center hover:bg-gray-200">
-                                            <motion.div whileHover={{ rotate: 20 }} transition={{ type: "spring", stiffness: 300 }}>
+                                        <Link to="#" className="font-medium text-sm text-gray-900 py-2.5 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-200">
+                                            <motion.div whileHover={{ rotate: 20 }}>
                                                 <AdminPanelSettingsOutlinedIcon className='mr-4' />
                                             </motion.div>
                                             Clientes
@@ -85,9 +85,9 @@ function Sidebar() {
                                         transition={{ duration: 0.3, delay: 0.1 }}
                                         whileHover={{ scale: 1.08 }}
                                     >
-                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 rounded-lg flex items-center hover:bg-gray-200">
-                                            <motion.div whileHover={{ rotate: 20 }} transition={{ type: "spring", stiffness: 300 }}>
-                                                <FileOpenOutlinedIcon className='mr-4' />
+                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200">
+                                            <motion.div whileHover={{ rotate: 20 }} >
+                                                <FileOpenOutlinedIcon className='mr-4 ' />
                                             </motion.div>
                                             Informes
                                         </Link>
@@ -98,8 +98,8 @@ function Sidebar() {
                                         transition={{ duration: 0.3, delay: 0.2 }}
                                         whileHover={{ scale: 1.08 }}
                                     >
-                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 rounded-lg flex items-center hover:bg-gray-200">
-                                            <motion.div whileHover={{ rotate: 20 }} transition={{ type: "spring", stiffness: 300 }}>
+                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200">
+                                            <motion.div whileHover={{ rotate: 20 }} >
                                                 <Inventory2OutlinedIcon className='mr-4' />
                                             </motion.div>
                                             Inventario
@@ -111,8 +111,8 @@ function Sidebar() {
                                         transition={{ duration: 0.3, delay: 0.3 }}
                                         whileHover={{ scale: 1.08 }}
                                     >
-                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 rounded-lg flex items-center hover:bg-gray-200">
-                                            <motion.div whileHover={{ rotate: 20 }} transition={{ type: "spring", stiffness: 300 }}>
+                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200">
+                                            <motion.div whileHover={{ rotate: 20 }} >
                                                 <TravelExploreOutlinedIcon className='mr-4' />
                                             </motion.div>
                                             Zonas
@@ -124,8 +124,8 @@ function Sidebar() {
                                         transition={{ duration: 0.3, delay: 0.4 }}
                                         whileHover={{ scale: 1.08 }}
                                     >
-                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 rounded-lg flex items-center hover:bg-gray-200">
-                                            <motion.div whileHover={{ rotate: 20 }} transition={{ type: "spring", stiffness: 300 }}>
+                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200">
+                                            <motion.div whileHover={{ rotate: 20 }} >
                                                 <PersonAddAltOutlinedIcon className='mr-4' />
                                             </motion.div>
                                             Usuarios
@@ -142,9 +142,9 @@ function Sidebar() {
                                         transition={{ duration: 0.3 }}
                                         whileHover={{ scale: 1.08 }}
                                     >
-                                        <Link to="#" className="font-medium text-sm text-gray-900 py-2.5 px-4 rounded-lg flex items-center hover:bg-gray-200">
-                                            <motion.div whileHover={{ rotate: 20 }} transition={{ type: "spring", stiffness: 300 }}>
-                                                <CreditScoreOutlinedIcon className='mr-4' />
+                                        <Link to="#" className="font-medium text-sm text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200">
+                                            <motion.div whileHover={{ rotate: 20 }} >
+                                                <CreditScoreOutlinedIcon className='mr-4 bg-gray-700' />
                                             </motion.div>
                                             Factura
                                         </Link>
@@ -155,8 +155,8 @@ function Sidebar() {
                                         transition={{ duration: 0.3, delay: 0.1 }}
                                         whileHover={{ scale: 1.08 }}
                                     >
-                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 rounded-lg flex items-center hover:bg-gray-200">
-                                            <motion.div whileHover={{ rotate: 20 }} transition={{ type: "spring", stiffness: 300 }}>
+                                        <Link to="#" className="font-medium text-sm mt-2 text-gray-900 py-2.5 transition duration-300 ease-in-out transform hover:scale-350 px-4 rounded-lg flex items-center hover:bg-gray-200">
+                                            <motion.div whileHover={{ rotate: 20 }} >
                                                 <PlagiarismOutlinedIcon className='mr-4' />
                                             </motion.div>
                                             Informes
@@ -173,12 +173,13 @@ function Sidebar() {
                                 transition={{ duration: 0.3, delay: 0.5 }}
                                 whileHover={{ scale: 1.08 }}
                             >
-                                <button onClick={cerrarSession} className="font-medium text-sm w-full text-gray-900 py-2.5 px-4 rounded-lg flex items-center hover:bg-gray-200">
-                                    <motion.div whileHover={{ rotate: 20 }} transition={{ type: "spring", stiffness: 250, damping: 10 }}>
+                                <button onClick={cerrarSession} className="font-medium text-sm w-full text-gray-900 py-2.5 px-4 transition duration-100 ease-in-out transform hover:scale-500 rounded-lg flex items-center hover:bg-gray-200">
+                                    <motion.div whileHover={{ rotate: 20 }} >
                                         <LogoutOutlinedIcon className='mr-2' />
                                     </motion.div>
                                     Salir
                                 </button>
+
                             </motion.div>
                         </div>
                     </div>
