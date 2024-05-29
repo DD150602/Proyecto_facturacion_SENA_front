@@ -8,7 +8,7 @@ function StackCumston({ children }) {
                 top: 110,
                 right: 15,
                 bottom: 40,
-                left: 'calc(17% + 4px)',
+                left: 'calc(16rem + 4px)',
                 p: [3, 3, 4],
                 width: '82%',
                 minHeight: 300,
