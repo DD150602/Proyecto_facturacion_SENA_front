@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { IconButton, InputAdornment, Alert } from '@mui/material'
+import { IconButton, InputAdornment, Alert, CircularProgress } from '@mui/material' // Importa CircularProgress para el indicador de carga
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { Link, useNavigate } from 'react-router-dom'
 import LockIcon from '@mui/icons-material/Lock'
@@ -18,10 +18,11 @@ const defautlvalues = {
   password_usuario: ''
 }
 
-function Login () {
+function Login() {
   const [mostrarContraseña, setMostrarContraseña] = useState(false)
   const [mostrarAlerta, setMostrarAlerta] = useState(false)
   const [mensajeError, setMensajeError] = useState(false)
+  const [isLoading, setIsLoading] = useState(false) // Nuevo estado para controlar la visibilidad del "loading"
   const { user, setUser } = useUser()
 
   const { values, handleInputChange } = useForm(defautlvalues)
@@ -32,6 +33,7 @@ function Login () {
   const authSession = async (e) => {
     e.preventDefault()
     setValuesError(defautlvalues)
+    setIsLoading(true) // Muestra el indicador de carga al iniciar sesión
     try {
       const response = await axios.post('http://localhost:4321/login', { correo_usuario: values.correo_usuario, password_usuario: values.password_usuario })
       const { user } = response.data
@@ -52,6 +54,8 @@ function Login () {
       }
       setMensajeError(errorMessage)
       setMostrarAlerta(true)
+    } finally {
+      setIsLoading(false) // Oculta el indicador de carga después de intentar iniciar sesión
     }
   }
 
@@ -135,6 +139,11 @@ function Login () {
                     <LockIcon className='text-gray-500 mr-2' />
                     <Link to='/recuperar-password_usuario' className='text-gray-500 hover:underline'>Recuperar Contraseña</Link>
                   </div>
+                  {isLoading && ( // Muestra el indicador de carga mientras se está autenticando
+                    <div className="flex justify-center mt-5">
+                      <CircularProgress />
+                    </div>
+                  )}
                 </form>
               </div>
             </div>

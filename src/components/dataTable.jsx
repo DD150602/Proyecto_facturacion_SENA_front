@@ -3,7 +3,6 @@ import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
 import { Alert, Snackbar, Slide, Box } from '@mui/material'
 import React, { useState, useEffect } from 'react'
 
-
 const theme = createTheme({
     palette: {
         primary: { main: '#4B5563' },
@@ -65,11 +64,11 @@ export default function DataTable(props) {
         }, 2000)
     }, [])
 
-    const handleRowSelection = (ids) => {
-        const selectedId = ids[0] ? ids[0] : null
-        setSelectedRow(selectedId)
-        selectId(selectedId)
-        if (selectedId) {
+    const handleRowSelection = (selection) => {
+        const selectedId = selection.length > 0 ? selection[selection.length - 1] : null
+        if (selectedId !== selectedRow) {
+            setSelectedRow(selectedId)
+            selectId(selectedId)
             setAlertOpen(true)
         }
     }
@@ -87,8 +86,9 @@ export default function DataTable(props) {
                     }}
                     pageSizeOptions={[5, 10]}
                     loading={loading}
-                    checkboxSelection
-                    onRowSelectionModelChange={handleRowSelection}
+                    disableSelectionOnClick
+                    onRowSelectionModelChange={(selection) => handleRowSelection(selection)}
+                    selectionModel={selectedRow ? [selectedRow] : []}
                 />
                 <Snackbar
                     open={alertOpen}
