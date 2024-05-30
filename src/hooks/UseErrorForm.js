@@ -7,12 +7,12 @@ export default function useFormErrors (defaultValues) {
     console.log(name, message)
     setValuesError(prevValuesError => ({
       ...prevValuesError,
-      [name]: message + prevValuesError[name]
+      [name]: `${message}. ${prevValuesError[name]}`
     }))
   }
 
   const recognizeEmptyName = (name) => {
-    return true
+    return valuesError[name] !== ''
   }
 
   return {
