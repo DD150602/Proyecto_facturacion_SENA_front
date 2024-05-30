@@ -14,6 +14,7 @@ export default {
         'nerve-pink': '#EC4899',
         'nerve-indigo': '#6366F1',
         'nerve-cyan': '#06B6D4',
+        'blue-fond': '#03045e'
       },
       spacing: {
         '128': '32rem',
