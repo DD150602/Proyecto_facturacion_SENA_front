@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import HomeAdmin from "./pages/admin/homeAdmin";
 import HomeVendedor from "./pages/vendedor/homeVendedor";
+import ZonasAdmin from "./pages/admin/zonasAdmin";
 import ProtectedRoute from "./service/route";
 
 function App() {
@@ -24,6 +25,15 @@ function App() {
             <ProtectedRoute
               elemento={<HomeVendedor />}
               rolesPermitidos={[2]}
+            />
+          }
+        />
+        <Route
+          path="/zonas"
+          element={
+            <ProtectedRoute
+              elemento={<ZonasAdmin />}
+              rolesPermitidos={[1]}
             />
           }
         />
