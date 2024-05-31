@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Input from '../components/InputComponent'
 import useFormErrors from '../hooks/UseErrorForm'
 import useForm from '../hooks/UseForm'
@@ -8,6 +8,7 @@ import Selects from '../components/selectComponent'
 import InputDate from '../components/dateComponent'
 import axios from 'axios'
 import { goOverErrors } from '../utils/goOverErros'
+import { getDataById } from '../utils/getDataById'
 
 const defautlvalues = {
   primerNombreUsuario: '',
@@ -31,25 +32,39 @@ const items = [
 ]
 
 export default function EditarEmpleados (props) {
-  const { setActualizar, setInfo } = props
+  const { setActualizar, setInfo, id } = props
   const { values, handleInputChange, handleInputChangeDate, setValues } = useForm(defautlvalues)
   const { valuesError, setValuesError, handleSettingError, recognizeEmptyName } = useFormErrors(defautlvalues)
   const [mostrarAlerta, setMostrarAlerta] = useState(false)
   const [mensajeError, setMensajeError] = useState(false)
+
+  useEffect(() => {
+    const getData = async (id) => {
+      const { todosDatos, validacion } = await getDataById({ id, endpoind: 'usuarios', defautlvalues })
+      if (validacion) {
+        if (todosDatos instanceof Error) {
+          setMensajeError(todosDatos)
+        } else {
+          setValues(todosDatos)
+        }
+      }
+    }
+    getData(id)
+  }, [id])
 
   const editUser = async (e) => {
     e.preventDefault()
     setValuesError(defautlvalues)
     setMostrarAlerta(false)
     try {
-      const response = await axios.post('http://localhost:4321/usuarios', values)
+      const response = await axios.patch(`http://localhost:4321/usuarios/${values.id}`, values)
       setActualizar(prevValuesError => (
         !prevValuesError
       ))
       setValues(defautlvalues)
       setInfo(response.data.message)
     } catch (error) {
-      let errorMessage = 'Error al generar el registro'
+      let errorMessage = 'Error al editar el registro'
       if (error.response.data.objectError) goOverErrors(error.response.data.objectError, handleSettingError)
       else if (error.response && error.response.data && error.response.data.message) {
         errorMessage = error.response.data.message
