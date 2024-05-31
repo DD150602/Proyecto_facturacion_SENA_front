@@ -12,10 +12,10 @@ export default function useForm (defaultValues) {
   }
 
   const handleInputChangeDate = (name, value) => {
-    setValues({
-      ...values,
+    setValues(prevValuesError => ({
+      ...prevValuesError,
       [name]: value
-    })
+    }))
   }
 
   return {
