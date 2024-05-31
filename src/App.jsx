@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import HomeAdmin from "./pages/admin/homeAdmin";
 import HomeVendedor from "./pages/vendedor/homeVendedor";
 import ProtectedRoute from "./service/route";
+import PaymentPage from "./pages/vendedor/payment";
 
 function App() {
   return (
@@ -23,6 +24,15 @@ function App() {
           element={
             <ProtectedRoute
               elemento={<HomeVendedor />}
+              rolesPermitidos={[2]}
+            />
+          }
+        />
+        <Route
+          path="/abonos"
+          element={
+            <ProtectedRoute
+              elemento={<PaymentPage />}
               rolesPermitidos={[2]}
             />
           }
