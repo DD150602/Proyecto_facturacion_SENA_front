@@ -7,7 +7,6 @@ export default function Input (props) {
       id={id}
       label={label}
       variant='outlined'
-      margin='normal'
       sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
       name={name}
       value={value}
@@ -19,7 +18,6 @@ export default function Input (props) {
       InputProps={InputProps}
       type={type}
       fullWidth
-      className='mb-2'
     />
   )
 }
