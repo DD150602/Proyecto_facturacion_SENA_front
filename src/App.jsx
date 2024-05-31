@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import HomeAdmin from "./pages/admin/homeAdmin";
 import HomeVendedor from "./pages/vendedor/homeVendedor";
 import ProtectedRoute from "./service/route";
+import Productos from "./pages/admin/Productos";
 
 function App() {
   return (
@@ -14,6 +15,15 @@ function App() {
           element={
             <ProtectedRoute
               elemento={<HomeAdmin />}
+              rolesPermitidos={[1]}
+            />
+          }
+        />
+        <Route
+          path='/inventario'
+          element={
+            <ProtectedRoute
+              elemento={<Productos />}
               rolesPermitidos={[1]}
             />
           }
