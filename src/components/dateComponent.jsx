@@ -34,21 +34,23 @@ export default function InputDate (props) {
   }
 
   return (
-    <FormControl className='mb-4' sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px' } }} error={error} fullWidth>
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='es'>
-        <DatePicker
-          id={id}
-          label={label}
-          value={value}
-          onChange={handleDateChange}
-          required={required}
-          disabled={disabled}
-          minDate={blockPastDates ? dayjs() : undefined}
-          views={views}
-          renderInput={(params) => <TextField {...params} />}
-        />
-      </LocalizationProvider>
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
-    </FormControl>
+    <div className='mb-2'>
+      <FormControl sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px' } }} error={error} fullWidth>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='es'>
+          <DatePicker
+            id={id}
+            label={label}
+            value={value}
+            onChange={handleDateChange}
+            required={required}
+            disabled={disabled}
+            minDate={blockPastDates ? dayjs() : undefined}
+            views={views}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+        {helperText && <FormHelperText>{helperText}</FormHelperText>}
+      </FormControl>
+    </div>
   )
 }
