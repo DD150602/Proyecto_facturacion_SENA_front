@@ -4,18 +4,19 @@ import FormHelperText from '@mui/material/FormHelperText'
 function Selects (props) {
   const { id, label, name, onChange, value, items, required, disabled, error, helperText } = props
   return (
-    <FormControl className='mb-4' sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px' } }} error={error} fullWidth>
-      <InputLabel required={required}>{label}</InputLabel>
-      <Select
-        id={id}
-        name={name}
-        label={label}
-        value={value}
-        onChange={onChange}
-        items={items}
-        disabled={disabled}
-      >
-        {
+    <div className='mb-2'>
+      <FormControl sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px' } }} error={error} fullWidth>
+        <InputLabel required={required}>{label}</InputLabel>
+        <Select
+          id={id}
+          name={name}
+          label={label}
+          value={value}
+          onChange={onChange}
+          items={items}
+          disabled={disabled}
+        >
+          {
         items.map((item) => (
           <MenuItem
             key={item.id}
@@ -25,9 +26,10 @@ function Selects (props) {
           </MenuItem>
         ))
       }
-      </Select>
-      <FormHelperText>{helperText}</FormHelperText>
-    </FormControl>
+        </Select>
+        <FormHelperText>{helperText}</FormHelperText>
+      </FormControl>
+    </div>
   )
 }
 

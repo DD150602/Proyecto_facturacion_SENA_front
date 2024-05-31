@@ -19,7 +19,7 @@ export default function Input (props) {
       InputProps={InputProps}
       type={type}
       fullWidth
-      className='mb-4'
+      className='mb-2'
     />
   )
 }
