@@ -1,5 +1,5 @@
-import { Grid, IconButton, InputAdornment } from '@mui/material'
-import React from 'react'
+import { Alert, Grid, IconButton, InputAdornment } from '@mui/material'
+import React, { useState } from 'react'
 import Input from './InputComponent'
 import useForm from '../hooks/UseForm'
 import useFormErrors from '../hooks/UseErrorForm'
@@ -14,33 +14,45 @@ const defaultValues = {
   linkFotoProducto: ''
 }
 export default function AgregarProductosComponent (props) {
-  const { setActualizar } = props
+  const [mostrarAlerta, setMostrarAlerta] = useState(false)
+  const [mensajeError, setMensajeError] = useState(false)
+
+  const { setActualizar, success } = props
   const { values, setValues, handleInputChange } = useForm(defaultValues)
   const { valuesError, setValuesError, handleSettingError, recognizeEmptyName } = useFormErrors(defaultValues)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setValuesError(defaultValues)
+    setMostrarAlerta(false)
     try {
       const response = await api.post('/products', values)
       setActualizar(prevValuesError => (
         !prevValuesError
       ))
       setValues(defaultValues)
+      success(response.data)
+      console.log(response.data)
     } catch (error) {
       let errorMessage = 'Error de envio'
       if (error.response.data.objectError) goOverErrors(error.response.data.objectError, handleSettingError)
-      else if (error.response && error.response.data && error.response.data.error) {
-        errorMessage = error.response.data.error
+      else if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message
       } else if (error.message) {
         errorMessage = error.message
-        console.log(errorMessage)
       }
+      setMensajeError(errorMessage)
+      setMostrarAlerta(true)
     }
   }
   return (
     <form className='overflow-y-scroll h-auto py-2' onSubmit={handleSubmit}>
       <h2 className='text-3xl text-center mb-2'>Agregar Productos</h2>
+      {mostrarAlerta && (
+        <Alert severity='error' variant='outlined' sx={{ width: '100%', marginBottom: '1rem' }}>
+          {mensajeError}
+        </Alert>
+      )}
       <Grid container spacing={2} columns={12} className='max-w-[500px]'>
         <Grid item xs={12} sm={6}>
           <Input
