@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import HomeAdmin from "./pages/admin/homeAdmin";
 import HomeVendedor from "./pages/vendedor/homeVendedor";
+import ZonasAdmin from "./pages/admin/zonasAdmin";
 import ProtectedRoute from "./service/route";
 import PaymentPage from "./pages/vendedor/payment";
 
@@ -34,6 +35,15 @@ function App() {
             <ProtectedRoute
               elemento={<PaymentPage />}
               rolesPermitidos={[2]}
+            />
+          }
+        />
+        <Route
+          path="/zonas"
+          element={
+            <ProtectedRoute
+              elemento={<ZonasAdmin />}
+              rolesPermitidos={[1]}
             />
           }
         />
