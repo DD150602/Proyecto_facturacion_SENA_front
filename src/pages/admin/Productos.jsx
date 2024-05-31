@@ -6,13 +6,15 @@ import CustomModal from '../../components/modalComponent'
 import AddIcon from '@mui/icons-material/Add'
 import CreateIcon from '@mui/icons-material/Create'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import ClearIcon from '@mui/icons-material/Clear'
 import DataTable from '../../components/dataTable'
 import { api } from '../../utils/conection'
 import AgregarProductosComponent from '../../components/agregarProductosComponent'
 import useSelectId from '../../hooks/useSelectId'
 import AlertPrincipal from '../../components/alertSucces'
+import EditarProductosComponent from '../../components/editarProductosComponent'
+import VerProductosComponent from '../../components/verProductoComponent'
+import EliminarProductosComponent from '../../components/eliminarProductoComponent'
 
 export default function Productos () {
   const [rows, setRows] = useState([])
@@ -21,7 +23,6 @@ export default function Productos () {
 
   const { selectId, saveSelectId } = useSelectId()
   const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
     { field: 'nombre_producto', headerName: 'Nombre', width: 150 },
     { field: 'descripcion_producto', headerName: 'Descripción', width: 200 },
     {
@@ -44,11 +45,48 @@ export default function Productos () {
       <StackCumston>
         <Botonera
           title='Gestiona tus empleados'
-          agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar'> <AgregarProductosComponent setActualizar={setActualizar} success={setSuccess} /> </CustomModal>}
-          editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' />}
-          ver={<CustomModal bgColor='success' icon={<RemoveRedEyeIcon className='w-6 h-6 mr-1' />} tooltip='Visualizar' text='Visualizar' />}
-          descarga={<CustomModal bgColor='primary' icon={<ArrowDownwardIcon className='w-6 h-6 mr-1' />} tooltip='Descargar' text='Descargar' />}
-          eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' />}
+          agregar={
+            <CustomModal
+              bgColor='primary'
+              icon={<AddIcon className='w-6 h-6 mr-1' />}
+              tooltip='Agregar' text='Agregar'
+            >
+              <AgregarProductosComponent setActualizar={setActualizar} success={setSuccess} />
+            </CustomModal>
+          }
+          editar={
+            <CustomModal
+              bgColor='secondary'
+              icon={<CreateIcon className='w-6 h-6 mr-1' />}
+              tooltip='Editar'
+              text='Editar'
+              disabled={!selectId}
+            >
+              <EditarProductosComponent id={selectId} setActualizar={setActualizar} success={setSuccess} />
+            </CustomModal>
+          }
+          ver={
+            <CustomModal
+              bgColor='success'
+              icon={<RemoveRedEyeIcon className='w-6 h-6 mr-1' />}
+              tooltip='Visualizar'
+              text='Visualizar'
+              disabled={!selectId}
+            >
+              <VerProductosComponent id={selectId} />
+            </CustomModal>
+          }
+          eliminar={
+            <CustomModal
+              bgColor='error'
+              icon={<ClearIcon className='w-6 h-6 mr-1' />}
+              tooltip='Eliminar'
+              text='Eliminar'
+              disabled={!selectId}
+            >
+              <EliminarProductosComponent id={selectId} setActualizar={setActualizar} success={setSuccess} />
+            </CustomModal>
+          }
         />
         <DataTable columns={columns} rows={rows} selectId={(id) => saveSelectId(id)} />
 
