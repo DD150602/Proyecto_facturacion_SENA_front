@@ -12,6 +12,7 @@ import { api } from '../../utils/conection'
 import useSelectId from '../../hooks/useSelectId'
 import AlertPrincipal from '../../components/alertSucces'
 import EditarEmpleados from '../../components/EditarUsuario'
+import EliminarEmpleados from '../../components/EliminarUsuario'
 
 function HomeAdmin () {
   const [actualizar, setActualizar] = useState(false)
@@ -46,7 +47,7 @@ function HomeAdmin () {
             title='Gestiona tus empleados'
             agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar'><AgregarEmpleados setActualizar={setActualizar} setInfo={setInfo} /></CustomModal>}
             editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' disabled={!selectId}><EditarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
-            eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' />}
+            eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' disabled={!selectId}><EliminarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
           />
           <DataTable columns={columns} rows={rows} selectId={(id) => saveSelectId(id)} />
         </div>
