@@ -18,7 +18,7 @@ const defautlvalues = {
   password_usuario: ''
 }
 
-function Login() {
+function Login () {
   const [mostrarContraseña, setMostrarContraseña] = useState(false)
   const [mostrarAlerta, setMostrarAlerta] = useState(false)
   const [mensajeError, setMensajeError] = useState(false)
@@ -88,24 +88,26 @@ function Login() {
                       {mensajeError}
                     </Alert>
                   )}
-                  <Input
-                    id='correo_usuario'
-                    label='Correo Electrónico'
-                    name='correo_usuario'
-                    value={values.correo_usuario}
-                    onChange={handleInputChange}
-                    error={recognizeEmptyName('correo_usuario')}
-                    helperText={valuesError.correo_usuario}
-                    InputProps={{
-                      endAdornment: mostrarAlerta && recognizeEmptyName('correo_usuario') && (
-                        <InputAdornment position='end'>
-                          <IconButton edge='end'>
-                            <ErrorOutlineIcon color='error' />
-                          </IconButton>
-                        </InputAdornment>
-                      )
-                    }}
-                  />
+                  <div className='mb-4 w-full'>
+                    <Input
+                      id='correo_usuario'
+                      label='Correo Electrónico'
+                      name='correo_usuario'
+                      value={values.correo_usuario}
+                      onChange={handleInputChange}
+                      error={recognizeEmptyName('correo_usuario')}
+                      helperText={valuesError.correo_usuario}
+                      InputProps={{
+                        endAdornment: mostrarAlerta && recognizeEmptyName('correo_usuario') && (
+                          <InputAdornment position='end'>
+                            <IconButton edge='end'>
+                              <ErrorOutlineIcon color='error' />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  </div>
                   <Input
                     id='password_usuario'
                     label='Contraseña'
@@ -140,7 +142,7 @@ function Login() {
                     <Link to='/recuperar-password_usuario' className='text-gray-500 hover:underline'>Recuperar Contraseña</Link>
                   </div>
                   {isLoading && ( // Muestra el indicador de carga mientras se está autenticando
-                    <div className="flex justify-center mt-5">
+                    <div className='flex justify-center mt-5'>
                       <CircularProgress />
                     </div>
                   )}
