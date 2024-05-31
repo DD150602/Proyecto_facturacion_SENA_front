@@ -11,9 +11,13 @@ import ClearIcon from '@mui/icons-material/Clear'
 import DataTable from '../../components/dataTable'
 import { api } from '../../utils/conection'
 import AgregarProductosComponent from '../../components/agregarProductosComponent'
+import useSelectId from '../../hooks/useSelectId'
 
 export default function Productos () {
   const [rows, setRows] = useState([])
+  const [actualizar, setActualizar] = useState(false)
+
+  const {selectId, saveSelectId} = useSelectId()
   const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'nombre_producto', headerName: 'Nombre', width: 150 },
@@ -30,7 +34,7 @@ export default function Productos () {
   useEffect(() => {
     api.get('products')
       .then((res) => setRows(res.data))
-  }, [])
+  }, [actualizar])
 
   return (
     <>
@@ -38,13 +42,13 @@ export default function Productos () {
       <StackCumston>
         <Botonera
           title='Gestiona tus empleados'
-          agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar'> <AgregarProductosComponent /> </CustomModal>}
+          agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar'> <AgregarProductosComponent setActualizar={setActualizar} /> </CustomModal>}
           editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' />}
           ver={<CustomModal bgColor='success' icon={<RemoveRedEyeIcon className='w-6 h-6 mr-1' />} tooltip='Visualizar' text='Visualizar' />}
           descarga={<CustomModal bgColor='primary' icon={<ArrowDownwardIcon className='w-6 h-6 mr-1' />} tooltip='Descargar' text='Descargar' />}
           eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' />}
         />
-        <DataTable columns={columns} rows={rows} selectId={(id) => console.log(id)} />
+        <DataTable columns={columns} rows={rows} selectId={(id) => saveSelectId(id)} />
 
       </StackCumston>
     </>

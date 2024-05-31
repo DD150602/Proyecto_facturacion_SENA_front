@@ -13,8 +13,9 @@ const defaultValues = {
   valorProducto: '',
   linkFotoProducto: ''
 }
-export default function AgregarProductosComponent () {
-  const { values, handleInputChange } = useForm(defaultValues)
+export default function AgregarProductosComponent (props) {
+  const { setActualizar } = props
+  const { values, setValues, handleInputChange } = useForm(defaultValues)
   const { valuesError, setValuesError, handleSettingError, recognizeEmptyName } = useFormErrors(defaultValues)
 
   const handleSubmit = async (e) => {
@@ -22,7 +23,10 @@ export default function AgregarProductosComponent () {
     setValuesError(defaultValues)
     try {
       const response = await api.post('/products', values)
-      console.log(response)
+      setActualizar(prevValuesError => (
+        !prevValuesError
+      ))
+      setValues(defaultValues)
     } catch (error) {
       let errorMessage = 'Error de envio'
       if (error.response.data.objectError) goOverErrors(error.response.data.objectError, handleSettingError)
@@ -36,7 +40,7 @@ export default function AgregarProductosComponent () {
   }
   return (
     <form className='overflow-y-scroll h-auto py-2' onSubmit={handleSubmit}>
-      <h1>Agregar Productos</h1>
+      <h2 className='text-3xl text-center mb-2'>Agregar Productos</h2>
       <Grid container spacing={2} columns={12} className='max-w-[500px]'>
         <Grid item xs={12} sm={6}>
           <Input
