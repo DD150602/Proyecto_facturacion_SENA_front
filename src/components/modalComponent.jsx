@@ -6,14 +6,14 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import Boton from './buttonComponent'
 
-const CustomModal = ({ children, bgColor, icon, tooltip, text }) => {
+const CustomModal = ({ children, bgColor, icon, tooltip, text, disabled }) => {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
   return (
     <>
-      <Boton bgColor={bgColor} icon={icon} tooltip={tooltip} onClick={handleOpen} text={text} />
+      <Boton bgColor={bgColor} icon={icon} tooltip={tooltip} onClick={handleOpen} text={text} disabled={disabled} />
       <Modal
         open={open}
         onClose={handleClose}
