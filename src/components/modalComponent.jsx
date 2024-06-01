@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import Boton from './buttonComponent'
 
-const CustomModal = ({ children, bgColor, icon, tooltip, text, disabled }) => {
+const CustomModal = ({ children, bgColor, icon, tooltip, text, disabled, top = '30%', left = '40%', color = 'background.paper', padding = 4 }) => {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -25,14 +25,14 @@ const CustomModal = ({ children, bgColor, icon, tooltip, text, disabled }) => {
           <Box
             sx={{
               position: 'absolute',
-              top: '30%',
-              left: '40%',
+              top,
+              left,
               transform: 'translate(-50%, -50%)',
               minWidth: 300,
-              bgcolor: 'background.paper',
+              bgcolor: color,
               borderRadius: '10px',
               boxShadow: 5,
-              p: 4,
+              p: padding,
               textAlign: 'center'
             }}
           >
