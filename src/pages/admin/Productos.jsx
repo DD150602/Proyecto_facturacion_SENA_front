@@ -44,7 +44,7 @@ export default function Productos () {
       <Sidebar />
       <StackCumston>
         <Botonera
-          title='Gestiona tus empleados'
+          title='Gestion de productos'
           agregar={
             <CustomModal
               bgColor='primary'
