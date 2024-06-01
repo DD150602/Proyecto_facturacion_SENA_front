@@ -45,7 +45,7 @@ function HomeAdmin () {
         <div>
           <Botonera
             title='Gestiona tus empleados'
-            agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar'><AgregarEmpleados setActualizar={setActualizar} setInfo={setInfo} /></CustomModal>}
+            agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' top='15%' left='25%' padding={0}><AgregarEmpleados setActualizar={setActualizar} setInfo={setInfo} /></CustomModal>}
             editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' disabled={!selectId}><EditarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
             eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' disabled={!selectId}><EliminarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
           />
