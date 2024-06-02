@@ -10,6 +10,7 @@ import axios from 'axios'
 import { goOverErrors } from '../utils/goOverErros'
 import AvatarComponent from './cargaImagenes'
 import AnimacionSvg from './animacionSVG'
+import useDataPreload from '../hooks/useDataReload'
 
 const defautlvalues = {
   primerNombreUsuario: '',
@@ -25,11 +26,6 @@ const defautlvalues = {
   fechaNacimientoUsuario: ''
 }
 
-const items = [
-  { id: 'M', value: 'Hombre' },
-  { id: 'F', value: 'Mujer' }
-]
-
 export default function AgregarEmpleados (props) {
   const { setActualizar, setInfo } = props
   const { values, handleInputChange, handleInputChangeDate, setValues } = useForm(defautlvalues)
@@ -37,11 +33,14 @@ export default function AgregarEmpleados (props) {
   const [mostrarAlerta, setMostrarAlerta] = useState(false)
   const [mensajeError, setMensajeError] = useState(false)
   const [buffer, setBuffer] = useState(null)
+  const [controlAvatar, setControlAvatar] = useState(false)
+  const { data: genereData } = useDataPreload('/usuarios/datageneral/generos')
 
   const createUser = async (e) => {
     e.preventDefault()
     setValuesError(defautlvalues)
     setMostrarAlerta(false)
+    setInfo('')
     const formData = new FormData()
     for (const key in values) {
       formData.append(key, values[key])
@@ -54,6 +53,8 @@ export default function AgregarEmpleados (props) {
       ))
       setValues(defautlvalues)
       setInfo(response.data.message)
+      setBuffer(null)
+      setControlAvatar(!controlAvatar)
     } catch (error) {
       let errorMessage = 'Error al generar el registro'
       if (error.response.data.objectError) goOverErrors(error.response.data.objectError, handleSettingError)
@@ -69,11 +70,11 @@ export default function AgregarEmpleados (props) {
 
   return (
     <form className='rounded-lg' onSubmit={createUser}>
-      <Grid container spacing={2} columns={12} className='max-w-[1000px] '>
+      <Grid container spacing={2} columns={12} className='max-w-[1000px]'>
         <Grid item xs={12} sm={5}>
           <div className='w-full h-full rounded-tl-lg rounded-bl-lg' style={{ position: 'relative', height: '100%' }}>
             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 }}>
-              <AvatarComponent setBuffer={setBuffer} />
+              <AvatarComponent setBuffer={setBuffer} control={controlAvatar} />
             </div>
             <AnimacionSvg />
           </div>
@@ -195,7 +196,7 @@ export default function AgregarEmpleados (props) {
                 name='idGenero'
                 value={values.idGenero}
                 onChange={handleInputChange}
-                items={items}
+                items={genereData}
                 disabled={false}
                 error={recognizeEmptyName('idGenero')}
                 helperText={valuesError.idGenero}
@@ -268,6 +269,7 @@ export default function AgregarEmpleados (props) {
                 name='fechaNacimientoUsuario'
                 fecha={values.fechaNacimientoUsuario}
                 onChange={handleInputChangeDate}
+                blockFutureDates
                 required
                 disabled={false}
                 error={recognizeEmptyName('fechaNacimientoUsuario')}
