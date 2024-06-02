@@ -18,6 +18,7 @@ function HomeAdmin () {
   const [actualizar, setActualizar] = useState(false)
   const { selectId, saveSelectId } = useSelectId()
   const [info, setInfo] = useState('')
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const columns = [
     { field: 'nombre_usuario', headerName: 'Nombre', width: 200 },
     { field: 'numero_documento_usuario', headerName: 'Numero Documento', width: 210 },
@@ -38,6 +39,19 @@ function HomeAdmin () {
       .then((res) => setRows(res.data))
   }, [actualizar])
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth)
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
   return (
     <>
       <Sidebar />
@@ -45,9 +59,9 @@ function HomeAdmin () {
         <div>
           <Botonera
             title='Gestiona tus empleados'
-            agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' top='0%' left='20%' padding={0}><AgregarEmpleados setActualizar={setActualizar} setInfo={setInfo} /></CustomModal>}
-            editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' disabled={!selectId} top='0%' left='20%' padding={0}><EditarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
-            eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' disabled={!selectId}><EliminarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
+            agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' top={screenWidth <= 1400 ? '0%' : '15%'} left={screenWidth <= 1400 ? '15%' : '25%'} padding={0}><AgregarEmpleados setActualizar={setActualizar} setInfo={setInfo} /></CustomModal>}
+            editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' disabled={!selectId} top={screenWidth <= 1400 ? '0%' : '15%'} left={screenWidth <= 1400 ? '15%' : '25%'} padding={0}><EditarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
+            eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' disabled={!selectId} padding={0}><EliminarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
           />
           <DataTable columns={columns} rows={rows} selectId={(id) => saveSelectId(id)} />
         </div>
