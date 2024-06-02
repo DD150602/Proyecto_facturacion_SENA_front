@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import Input from '../components/InputComponent'
 import useFormErrors from '../hooks/UseErrorForm'
 import useForm from '../hooks/UseForm'
-import { IconButton, InputAdornment, Grid, Alert } from '@mui/material'
+import { IconButton, InputAdornment, Grid, Alert, Fade } from '@mui/material'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import Selects from '../components/selectComponent'
 import axios from 'axios'
 import { goOverErrors } from '../utils/goOverErros'
-import { getDataById } from '../utils/getDataById'
-import { api } from '../utils/conection'
+import AnimacionSvg from './animacionSVG'
+import AutocompleteComponent from './autocompletComponent'
+import useDataPreload from '../hooks/useDataReload'
 
 const defautlvalues = {
   anotacion: '',
@@ -17,29 +17,14 @@ const defautlvalues = {
 
 export default function EliminarEmpleados (props) {
   const { setActualizar, setInfo, id } = props
-  const { values, handleInputChange, setValues } = useForm(defautlvalues)
+  const { data: userData, refetchData } = useDataPreload(`/usuarios/zona/${id}`)
+  const { values, handleInputChange, handleAutocompleteChange, setValues } = useForm(defautlvalues)
   const { valuesError, setValuesError, handleSettingError, recognizeEmptyName } = useFormErrors(defautlvalues)
   const [mostrarAlerta, setMostrarAlerta] = useState(false)
   const [mensajeError, setMensajeError] = useState(false)
-  const [items, setItems] = useState([])
 
   useEffect(() => {
-    const getData = async (id) => {
-      const { todosDatos, validacion } = await getDataById({ id, endpoind: 'usuarios', defautlvalues })
-      if (validacion) {
-        if (todosDatos instanceof Error) {
-          setMensajeError(todosDatos)
-        } else {
-          try {
-            const result = await api.get(`/usuarios/zona/${id}`)
-            setItems(result.data)
-          } catch (error) {
-            setItems([])
-          }
-        }
-      }
-    }
-    getData(id)
+    refetchData()
   }, [id])
 
   const editUser = async (e) => {
@@ -47,7 +32,11 @@ export default function EliminarEmpleados (props) {
     setValuesError(defautlvalues)
     setMostrarAlerta(false)
     try {
-      const response = await axios.patch(`http://localhost:4321/usuarios/desabilitar/${id}`, values)
+      const dataToSend = {
+        ...values,
+        idUserRemplazo: values.idUserRemplazo?.id
+      }
+      const response = await axios.patch(`http://localhost:4321/usuarios/desabilitar/${id}`, dataToSend)
       setActualizar(prevValuesError => (
         !prevValuesError
       ))
@@ -67,55 +56,67 @@ export default function EliminarEmpleados (props) {
   }
 
   return (
-    <form className='overflow-y-scroll auto pt-2 pb-2 w-[300px]' onSubmit={editUser}>
-      <h1 className='text-3xl text-center mb-2'>Desactivar Empleado</h1>
-      {mostrarAlerta && (
-        <Alert severity='error' variant='outlined' sx={{ width: '100%', marginBottom: '1rem' }}>
-          {mensajeError}
-        </Alert>
-      )}
-      <Grid container spacing={2} columns={12} className='max-w-[300px]'>
-        <Grid item xs={12} sm={12}>
-          <Selects
-            id='idUserRemplazo'
-            label='Usuario de reemplazo'
-            name='idUserRemplazo'
-            value={values.idUserRemplazo}
-            onChange={handleInputChange}
-            items={items}
-            disabled={false}
-            error={recognizeEmptyName('idUserRemplazo')}
-            helperText={valuesError.idUserRemplazo}
-          />
+    <form className='rounded-lg' onSubmit={editUser}>
+      <Grid container spacing={2} columns={12} className='max-w-[600px]'>
+        <Grid item xs={12} sm={5}>
+          <div className='w-full h-full rounded-tl-lg rounded-bl-lg' style={{ position: 'relative', height: '100%' }}>
+            <AnimacionSvg />
+          </div>
         </Grid>
-        <Grid item xs={12} sm={12}>
-          <Input
-            id='anotacion'
-            label='Anotacion'
-            name='anotacion'
-            value={values.anotacion}
-            onChange={handleInputChange}
-            error={recognizeEmptyName('anotacion')}
-            helperText={valuesError.anotacion}
-            InputProps={{
-              endAdornment: recognizeEmptyName('anotacion') && (
-                <InputAdornment position='end'>
-                  <IconButton edge='end'>
-                    <ErrorOutlineIcon color='error' />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
+        <Grid item xs={12} sm={7} className='pb-1'>
+          <h1 className='text-4xl text-center mt-3 mb-1 text-blue-fond font-bold'>Desactiva tu empleado</h1>
+          {mostrarAlerta &&
+            <Fade in={mostrarAlerta} timeout={300} className='mb-4'>
+              <Alert severity='error' variant='outlined' sx={{ width: '98%' }}>
+                {mensajeError}
+              </Alert>
+            </Fade>}
+          <Grid container spacing={2} columns={12} className='pl-2 pr-6 pb-1'>
+            <Grid item xs={12} sm={12}>
+              <AutocompleteComponent
+                options={userData}
+                id='idUserRemplazo'
+                label='Usuario de reemplazo'
+                name='idUserRemplazo'
+                value={values.idUserRemplazo}
+                onChange={handleAutocompleteChange}
+                disabled={false}
+                error={recognizeEmptyName('idUserRemplazo')}
+                helperText={valuesError.idUserRemplazo}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <Input
+                id='anotacion'
+                label='Anotacion'
+                name='anotacion'
+                value={values.anotacion}
+                onChange={handleInputChange}
+                error={recognizeEmptyName('anotacion')}
+                helperText={valuesError.anotacion}
+                multiline
+                InputProps={{
+                  endAdornment: recognizeEmptyName('anotacion') && (
+                    <InputAdornment position='end'>
+                      <IconButton edge='end'>
+                        <ErrorOutlineIcon color='error' />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <button
+                type='submit'
+                className='w-full inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-sky-600 leading-normal text-xs ease-in tracking-tight-rem shadow-xs bg-150 bg-x-25 hover:-translate-y-px active:opacity-85 hover:shadow-md'
+              >
+                Registrar
+              </button>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={12}>
-          <button
-            type='submit'
-            className='w-full inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-gradient-to-tl from-blue-500 to-violet-500 leading-normal text-xs ease-in tracking-tight-rem shadow-xs bg-150 bg-x-25 hover:-translate-y-px active:opacity-85 hover:shadow-md'
-          >
-            Registrar
-          </button>
-        </Grid>
+
       </Grid>
     </form>
   )
