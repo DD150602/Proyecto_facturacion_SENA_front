@@ -22,15 +22,18 @@ export default function EliminarEmpleados (props) {
   const { valuesError, setValuesError, handleSettingError, recognizeEmptyName } = useFormErrors(defautlvalues)
   const [mostrarAlerta, setMostrarAlerta] = useState(false)
   const [mensajeError, setMensajeError] = useState(false)
+  const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
     refetchData()
+    setDisabled(false)
   }, [id])
 
-  const editUser = async (e) => {
+  const deleteUser = async (e) => {
     e.preventDefault()
     setValuesError(defautlvalues)
     setMostrarAlerta(false)
+    setInfo('')
     try {
       const dataToSend = {
         ...values,
@@ -42,6 +45,7 @@ export default function EliminarEmpleados (props) {
       ))
       setValues(defautlvalues)
       setInfo(response.data.message)
+      setDisabled(true)
     } catch (error) {
       let errorMessage = 'Error al eliminar el registro'
       if (error.response.data.objectError) goOverErrors(error.response.data.objectError, handleSettingError)
@@ -56,7 +60,7 @@ export default function EliminarEmpleados (props) {
   }
 
   return (
-    <form className='rounded-lg' onSubmit={editUser}>
+    <form className='rounded-lg' onSubmit={deleteUser}>
       <Grid container spacing={2} columns={12} className='max-w-[600px]'>
         <Grid item xs={12} sm={5}>
           <div className='w-full h-full rounded-tl-lg rounded-bl-lg' style={{ position: 'relative', height: '100%' }}>
@@ -80,7 +84,7 @@ export default function EliminarEmpleados (props) {
                 name='idUserRemplazo'
                 value={values.idUserRemplazo}
                 onChange={handleAutocompleteChange}
-                disabled={false}
+                disabled={disabled}
                 error={recognizeEmptyName('idUserRemplazo')}
                 helperText={valuesError.idUserRemplazo}
               />
@@ -95,6 +99,7 @@ export default function EliminarEmpleados (props) {
                 error={recognizeEmptyName('anotacion')}
                 helperText={valuesError.anotacion}
                 multiline
+                disabled={disabled}
                 InputProps={{
                   endAdornment: recognizeEmptyName('anotacion') && (
                     <InputAdornment position='end'>
@@ -109,7 +114,8 @@ export default function EliminarEmpleados (props) {
             <Grid item xs={12} sm={12}>
               <button
                 type='submit'
-                className='w-full inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-sky-600 leading-normal text-xs ease-in tracking-tight-rem shadow-xs bg-150 bg-x-25 hover:-translate-y-px active:opacity-85 hover:shadow-md'
+                className={`w-full inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-sky-600 leading-normal text-xs ease-in tracking-tight-rem shadow-xs bg-150 bg-x-25 hover:-translate-y-px active:opacity-85 hover:shadow-md ${disabled ? 'opacity-50' : ''}`}
+                disabled={disabled}
               >
                 Registrar
               </button>
