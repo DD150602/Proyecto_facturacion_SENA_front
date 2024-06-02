@@ -22,6 +22,7 @@ export default function AutocompleteComponent (props) {
       value={value || null}
       onChange={(event, newValue) => onChange(name, newValue)}
       filterSelectedOptions
+      disabled={disabled}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -31,7 +32,6 @@ export default function AutocompleteComponent (props) {
           sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
           name={name}
           required={required}
-          disabled={disabled}
           error={error}
           helperText={helperText}
           type={type}
