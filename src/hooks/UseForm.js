@@ -18,10 +18,17 @@ export default function useForm (defaultValues) {
     }))
   }
 
+  const handleAutocompleteChange = (name, newValue) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: newValue
+    }))
+  }
   return {
     values,
     setValues,
     handleInputChange,
-    handleInputChangeDate
+    handleInputChangeDate,
+    handleAutocompleteChange
   }
 }
