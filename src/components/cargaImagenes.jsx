@@ -1,7 +1,7 @@
 import { Avatar } from '@mui/material'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 export default function AvatarComponent (props) {
-  const { setBuffer, avatarCarga = null } = props
+  const { setBuffer, avatarCarga = null, control } = props
 
   const [avatar, setAvatar] = useState(null)
 
@@ -9,6 +9,11 @@ export default function AvatarComponent (props) {
     setAvatar(URL.createObjectURL(event.target.files[0]))
     setBuffer(event.target.files[0])
   }
+
+  useEffect(() => {
+    setAvatar(null)
+  }, [control])
+
   return (
     <div className='flex flex-col items-center'>
       <Avatar alt='Avatar' src={avatar === null ? avatarCarga : avatar} sx={{ width: 150, height: 150 }} />
