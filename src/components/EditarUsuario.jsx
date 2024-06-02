@@ -11,6 +11,7 @@ import { goOverErrors } from '../utils/goOverErros'
 import { getDataById } from '../utils/getDataById'
 import AvatarComponent from './cargaImagenes'
 import AnimacionSvg from './animacionSVG'
+import useDataPreload from '../hooks/useDataReload'
 
 const defautlvalues = {
   primerNombreUsuario: '',
@@ -28,11 +29,6 @@ const defautlvalues = {
   linkFoto: ''
 }
 
-const items = [
-  { id: 'M', value: 'Hombre' },
-  { id: 'F', value: 'Mujer' }
-]
-
 export default function EditarEmpleados (props) {
   const { setActualizar, setInfo, id } = props
   const { values, handleInputChange, handleInputChangeDate, setValues } = useForm(defautlvalues)
@@ -41,6 +37,8 @@ export default function EditarEmpleados (props) {
   const [mensajeError, setMensajeError] = useState(false)
   const [buffer, setBuffer] = useState(null)
   const [avatar, setAvatar] = useState(null)
+  const [disabled, setDisabled] = useState(false)
+  const { data: genereData } = useDataPreload('/usuarios/datageneral/generos')
 
   useEffect(() => {
     const getData = async (id) => {
@@ -49,6 +47,7 @@ export default function EditarEmpleados (props) {
         if (todosDatos instanceof Error) {
           setMensajeError(todosDatos)
         } else {
+          setDisabled(false)
           setValues(todosDatos)
           setAvatar(todosDatos.linkFoto)
         }
@@ -72,8 +71,8 @@ export default function EditarEmpleados (props) {
       setActualizar(prevValuesError => (
         !prevValuesError
       ))
-      setValues(defautlvalues)
       setInfo(response.data.message)
+      setDisabled(true)
     } catch (error) {
       let errorMessage = 'Error al editar el registro'
       if (error.response.data.objectError) goOverErrors(error.response.data.objectError, handleSettingError)
@@ -107,7 +106,7 @@ export default function EditarEmpleados (props) {
                 {mensajeError}
               </Alert>
             </Fade>}
-          <Grid container spacing={2} columns={12} className='pl-2 pr-2 pb-1 overflow-y-scroll h-[550px]'>
+          <Grid container spacing={2} columns={12} className='pl-2 pr-2 pb-1 pt-1 overflow-y-scroll h-[550px]'>
             <Grid item xs={12} sm={6}>
               <Input
                 id='primerNombreUsuario'
@@ -117,6 +116,7 @@ export default function EditarEmpleados (props) {
                 onChange={handleInputChange}
                 error={recognizeEmptyName('primerNombreUsuario')}
                 helperText={valuesError.primerNombreUsuario}
+                disabled={disabled}
                 InputProps={{
                   endAdornment: recognizeEmptyName('primerNombreUsuario') && (
                     <InputAdornment position='end'>
@@ -137,6 +137,7 @@ export default function EditarEmpleados (props) {
                 onChange={handleInputChange}
                 error={recognizeEmptyName('segundoNombreUsuario')}
                 helperText={valuesError.segundoNombreUsuario}
+                disabled={disabled}
                 InputProps={{
                   endAdornment: recognizeEmptyName('segundoNombreUsuario') && (
                     <InputAdornment position='end'>
@@ -157,6 +158,7 @@ export default function EditarEmpleados (props) {
                 onChange={handleInputChange}
                 error={recognizeEmptyName('primerApellidoUsuario')}
                 helperText={valuesError.primerApellidoUsuario}
+                disabled={disabled}
                 InputProps={{
                   endAdornment: recognizeEmptyName('primerApellidoUsuario') && (
                     <InputAdornment position='end'>
@@ -177,6 +179,7 @@ export default function EditarEmpleados (props) {
                 onChange={handleInputChange}
                 error={recognizeEmptyName('segundoApellidoUsuario')}
                 helperText={valuesError.segundoApellidoUsuario}
+                disabled={disabled}
                 InputProps={{
                   endAdornment: recognizeEmptyName('segundoApellidoUsuario') && (
                     <InputAdornment position='end'>
@@ -197,6 +200,7 @@ export default function EditarEmpleados (props) {
                 onChange={handleInputChange}
                 error={recognizeEmptyName('numeroDocumentoUsuario')}
                 helperText={valuesError.numeroDocumentoUsuario}
+                disabled={disabled}
                 InputProps={{
                   endAdornment: recognizeEmptyName('numeroDocumentoUsuario') && (
                     <InputAdornment position='end'>
@@ -215,8 +219,8 @@ export default function EditarEmpleados (props) {
                 name='idGenero'
                 value={values.idGenero}
                 onChange={handleInputChange}
-                items={items}
-                disabled={false}
+                items={genereData}
+                disabled={disabled}
                 error={recognizeEmptyName('idGenero')}
                 helperText={valuesError.idGenero}
               />
@@ -230,6 +234,7 @@ export default function EditarEmpleados (props) {
                 onChange={handleInputChange}
                 error={recognizeEmptyName('correoUsuario')}
                 helperText={valuesError.correoUsuario}
+                disabled={disabled}
                 InputProps={{
                   endAdornment: recognizeEmptyName('correoUsuario') && (
                     <InputAdornment position='end'>
@@ -250,6 +255,7 @@ export default function EditarEmpleados (props) {
                 onChange={handleInputChange}
                 error={recognizeEmptyName('telefonoUsuario')}
                 helperText={valuesError.telefonoUsuario}
+                disabled={disabled}
                 InputProps={{
                   endAdornment: recognizeEmptyName('telefonoUsuario') && (
                     <InputAdornment position='end'>
@@ -269,7 +275,7 @@ export default function EditarEmpleados (props) {
                 fecha={values.fechaNacimientoUsuario}
                 onChange={handleInputChangeDate}
                 required
-                disabled={false}
+                disabled={disabled}
                 error={recognizeEmptyName('fechaNacimientoUsuario')}
                 helperText={valuesError.fechaNacimientoUsuario}
               />
@@ -283,6 +289,7 @@ export default function EditarEmpleados (props) {
                 onChange={handleInputChange}
                 error={recognizeEmptyName('direccionUsuario')}
                 helperText={valuesError.direccionUsuario}
+                disabled={disabled}
                 InputProps={{
                   endAdornment: recognizeEmptyName('direccionUsuario') && (
                     <InputAdornment position='end'>
@@ -297,7 +304,8 @@ export default function EditarEmpleados (props) {
             <Grid item xs={12} sm={12}>
               <button
                 type='submit'
-                className='w-full inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-sky-600 leading-normal text-xs ease-in tracking-tight-rem shadow-xs bg-150 bg-x-25 hover:-translate-y-px active:opacity-85 hover:shadow-md'
+                className={`w-full inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-sky-600 leading-normal text-xs ease-in tracking-tight-rem shadow-xs bg-150 bg-x-25 hover:-translate-y-px active:opacity-85 hover:shadow-md ${disabled ? 'opacity-50' : ''}`}
+                disabled={disabled}
               >
                 Registrar
               </button>
