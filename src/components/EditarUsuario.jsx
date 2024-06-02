@@ -276,6 +276,7 @@ export default function EditarEmpleados (props) {
                 onChange={handleInputChangeDate}
                 required
                 disabled={disabled}
+                blockFutureDates
                 error={recognizeEmptyName('fechaNacimientoUsuario')}
                 helperText={valuesError.fechaNacimientoUsuario}
               />
