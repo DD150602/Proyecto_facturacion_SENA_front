@@ -10,6 +10,10 @@ import useDataPreload from '../../hooks/useDataReload'
 import { useUser } from '../../utils/authContext'
 import { api } from '../../utils/conection'
 import dayjs from 'dayjs'
+import AgregarCliente from '../../components/CrearCliente'
+import CustomModal from '../../components/modalComponent'
+import AutocompleteComponent from '../../components/autocompletComponent'
+import AlertPrincipal from '../../components/alertSucces'
 
 function multiplicacion (a, b) {
   return parseInt(a, 10) * parseInt(b, 10)
@@ -35,9 +39,22 @@ function HomeVendedor () {
     idUsuario: user.id,
     idCliente: ''
   })
-
+  const [info, setInfo] = useState('')
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+  const [actualizar, setActualizar] = useState(false)
   const { data: productsData, error: productsError } = useDataPreload('/products/')
   const { data: cuotasData, error: cuotasError } = useDataPreload('/facturas/ver-tipo-cuota')
+  const { data: clientData, refetchData } = useDataPreload('cliente/todos/clientes')
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   useEffect(() => {
     if (productsError) {
@@ -53,6 +70,14 @@ function HomeVendedor () {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value
+    }))
+  }
+
+  const handleAutocompleteChange = (name, newValue) => {
+    console.log()
+    setFormData((prevValues) => ({
+      ...prevValues,
+      [name]: newValue
     }))
   }
 
@@ -108,6 +133,10 @@ function HomeVendedor () {
   useEffect(() => {
     calcularTotal()
   }, [prices])
+
+  useEffect(() => {
+    refetchData()
+  }, [actualizar])
 
   useEffect(() => {
     const futureDate = new Date(today)
@@ -205,18 +234,22 @@ function HomeVendedor () {
                   />
                 </Grid>
                 <Grid item xs={12} container justifyContent='center'>
-                  <Button onClick={handleAgregar} text='Agregar' />
+                  <Button onClick={handleAgregar} text='Agregar producto' />
                 </Grid>
                 <Grid item xs={12}>
-                  <Input
+                  <AutocompleteComponent
+                    options={clientData}
                     id='cedula'
                     label='Cedula'
                     name='cedula'
-                    type='text'
-                    onChange={handleChange}
                     value={formData.cedula}
-                    required
+                    onChange={handleAutocompleteChange}
                   />
+                </Grid>
+                <Grid item xs={12} container justifyContent='end'>
+                  <CustomModal bgColor='primary' tooltip='Agregar' text='Agregar Cliente' top={screenWidth <= 1400 ? '0%' : '15%'} left={screenWidth <= 1400 ? '15%' : '25%'} padding={0}>
+                    <AgregarCliente setInfo={setInfo} setActualizar={setActualizar} className='justify-end' />
+                  </CustomModal>
                 </Grid>
                 <Grid item xs={12}>
                   <h1 className='text-center text-sky-800'>PAGOS</h1>
@@ -270,6 +303,7 @@ function HomeVendedor () {
           </Box>
         </Box>
       </StackCustom>
+      <AlertPrincipal message={info} severity='success' />
     </div>
   )
 }
