@@ -4,30 +4,53 @@ import CustomModal from '../../components/modalComponent'
 import StackCumston from '../../components/stackComponent'
 import AddIcon from '@mui/icons-material/Add'
 import CreateIcon from '@mui/icons-material/Create'
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import Botonera from '../../components/groupButton'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import ClearIcon from '@mui/icons-material/Clear'
 import DataTable from '../../components/dataTable'
+import AgregarEmpleados from '../../components/AgregarUsuario'
+import { api } from '../../utils/conection'
+import useSelectId from '../../hooks/useSelectId'
+import AlertPrincipal from '../../components/alertSucces'
+import EditarEmpleados from '../../components/EditarUsuario'
+import EliminarEmpleados from '../../components/EliminarUsuario'
 
-import { useUser } from '../../utils/authContext'
-
-function HomeAdmin() {
-  const { user } = useUser()
-
+function HomeAdmin () {
+  const [actualizar, setActualizar] = useState(false)
+  const { selectId, saveSelectId } = useSelectId()
+  const [info, setInfo] = useState('')
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'age', headerName: 'Age', width: 110 },
-    { field: 'email', headerName: 'Email', width: 200 },
-  ];
+    { field: 'nombre_usuario', headerName: 'Nombre', width: 200 },
+    { field: 'numero_documento_usuario', headerName: 'Numero Documento', width: 210 },
+    { field: 'correo_usuario', headerName: 'Correo', width: 210 },
+    { field: 'telefono_usuario', headerName: 'Telefono', width: 200 },
+    {
+      field: 'estado_usuario',
+      headerName: 'Estado',
+      width: 200,
+      valueGetter: (params) =>
+          `${params.row.estado_usuario === 1 ? 'Activo' : 'Desactivado'}`
+    }
+  ]
 
-  const rows = [
-    { id: 1, name: 'John Doe', age: 25, email: 'john.doe@example.com' },
-    { id: 2, name: 'Jane Smith', age: 30, email: 'jane.smith@example.com' },
-    { id: 3, name: 'Sam Johnson', age: 22, email: 'sam.johnson@example.com' },
-    { id: 4, name: 'Lisa Brown', age: 28, email: 'lisa.brown@example.com' },
-  ];
+  const [rows, setRows] = useState([])
+  useEffect(() => {
+    api.get('usuarios')
+      .then((res) => setRows(res.data))
+  }, [actualizar])
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth)
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   return (
     <>
@@ -36,15 +59,14 @@ function HomeAdmin() {
         <div>
           <Botonera
             title='Gestiona tus empleados'
-            agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' />}
-            editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' />}
-            ver={<CustomModal bgColor='success' icon={<RemoveRedEyeIcon className='w-6 h-6 mr-1' />} tooltip='Visualizar' text='Visualizar' />}
-            descarga={<CustomModal bgColor='primary' icon={<ArrowDownwardIcon className='w-6 h-6 mr-1' />} tooltip='Descargar' text='Descargar' />}
-            eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' />}
+            agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' top={screenWidth <= 1400 ? '0%' : '15%'} left={screenWidth <= 1400 ? '15%' : '25%'} padding={0}><AgregarEmpleados setActualizar={setActualizar} setInfo={setInfo} /></CustomModal>}
+            editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' disabled={!selectId} top={screenWidth <= 1400 ? '0%' : '15%'} left={screenWidth <= 1400 ? '15%' : '25%'} padding={0}><EditarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
+            eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' disabled={!selectId} padding={0}><EliminarEmpleados setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
           />
-          <DataTable columns={columns} rows={rows} selectId={(id) => console.log(id)} />
+          <DataTable columns={columns} rows={rows} selectId={(id) => saveSelectId(id)} />
         </div>
       </StackCumston>
+      <AlertPrincipal message={info} severity='success' />
     </>
   )
 }

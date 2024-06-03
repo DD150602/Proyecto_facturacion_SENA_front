@@ -2,7 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import HomeAdmin from "./pages/admin/homeAdmin";
 import HomeVendedor from "./pages/vendedor/homeVendedor";
+import ZonasAdmin from "./pages/admin/zonasAdmin";
 import ProtectedRoute from "./service/route";
+import Productos from "./pages/admin/Productos";
 
 function App() {
   return (
@@ -19,11 +21,29 @@ function App() {
           }
         />
         <Route
+          path='/inventario'
+          element={
+            <ProtectedRoute
+              elemento={<Productos />}
+              rolesPermitidos={[1]}
+            />
+          }
+        />
+        <Route
           path="/dashboard_vendedor"
           element={
             <ProtectedRoute
               elemento={<HomeVendedor />}
               rolesPermitidos={[2]}
+            />
+          }
+        />
+        <Route
+          path="/zonas"
+          element={
+            <ProtectedRoute
+              elemento={<ZonasAdmin />}
+              rolesPermitidos={[1]}
             />
           }
         />

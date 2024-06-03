@@ -12,16 +12,23 @@ export default function useForm (defaultValues) {
   }
 
   const handleInputChangeDate = (name, value) => {
-    setValues({
-      ...values,
+    setValues(prevValuesError => ({
+      ...prevValuesError,
       [name]: value
-    })
+    }))
   }
 
+  const handleAutocompleteChange = (name, newValue) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: newValue
+    }))
+  }
   return {
     values,
     setValues,
     handleInputChange,
-    handleInputChangeDate
+    handleInputChangeDate,
+    handleAutocompleteChange
   }
 }
