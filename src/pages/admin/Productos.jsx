@@ -15,6 +15,7 @@ import AlertPrincipal from '../../components/alertSucces'
 import EditarProductosComponent from '../../components/editarProductosComponent'
 import VerProductosComponent from '../../components/verProductoComponent'
 import EliminarProductosComponent from '../../components/eliminarProductoComponent'
+import Avatar from '@mui/material/Avatar'
 
 export default function Productos () {
   const [rows, setRows] = useState([])
@@ -23,15 +24,22 @@ export default function Productos () {
 
   const { selectId, saveSelectId } = useSelectId()
   const columns = [
+    {
+      field: 'link_foto_producto',
+      headerName: 'Imagen',
+      width: 70,
+      renderCell: (params) => (
+        <Avatar src={params.row.link_foto_producto} alt='Avatar' />
+      )
+    },
     { field: 'nombre_producto', headerName: 'Nombre', width: 150 },
     { field: 'descripcion_producto', headerName: 'Descripción', width: 200 },
     {
       field: 'valor_producto',
       headerName: 'Valor',
-      width: 110,
+      width: 150,
       valueGetter: (params) => `$ ${params.row.valor_producto}`
-    },
-    { field: 'link_foto_producto', headerName: 'Imagen', width: 200 }
+    }
   ]
 
   useEffect(() => {
@@ -50,6 +58,7 @@ export default function Productos () {
               bgColor='primary'
               icon={<AddIcon className='w-6 h-6 mr-1' />}
               tooltip='Agregar' text='Agregar'
+              padding={0}
             >
               <AgregarProductosComponent setActualizar={setActualizar} success={setSuccess} />
             </CustomModal>
@@ -61,6 +70,7 @@ export default function Productos () {
               tooltip='Editar'
               text='Editar'
               disabled={!selectId}
+              padding={0}
             >
               <EditarProductosComponent id={selectId} setActualizar={setActualizar} success={setSuccess} />
             </CustomModal>
@@ -72,6 +82,7 @@ export default function Productos () {
               tooltip='Visualizar'
               text='Visualizar'
               disabled={!selectId}
+              padding={0}
             >
               <VerProductosComponent id={selectId} />
             </CustomModal>
@@ -83,6 +94,7 @@ export default function Productos () {
               tooltip='Eliminar'
               text='Eliminar'
               disabled={!selectId}
+              padding={0}
             >
               <EliminarProductosComponent id={selectId} setActualizar={setActualizar} success={setSuccess} />
             </CustomModal>
