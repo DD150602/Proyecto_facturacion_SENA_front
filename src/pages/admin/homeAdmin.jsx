@@ -10,6 +10,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import ClearIcon from '@mui/icons-material/Clear'
 import DataTable from '../../components/dataTable'
 
+
 import { useUser } from '../../utils/authContext'
 
 function HomeAdmin() {
@@ -37,7 +38,7 @@ function HomeAdmin() {
           <Botonera
             title='Gestiona tus empleados'
             agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' />}
-            editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' />}
+            editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' style={{ border: 'none' }} />}
             ver={<CustomModal bgColor='success' icon={<RemoveRedEyeIcon className='w-6 h-6 mr-1' />} tooltip='Visualizar' text='Visualizar' />}
             descarga={<CustomModal bgColor='primary' icon={<ArrowDownwardIcon className='w-6 h-6 mr-1' />} tooltip='Descargar' text='Descargar' />}
             eliminar={<CustomModal bgColor='error' icon={<ClearIcon className='w-6 h-6 mr-1' />} tooltip='Eliminar' text='Eliminar' />}

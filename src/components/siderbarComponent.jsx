@@ -72,7 +72,7 @@ function Sidebar() {
                                         transition={{ duration: 0.4 }}
                                         whileHover={{ scale: 1.08 }}
                                     >
-                                        <Link to="#" className="font-medium text-sm text-gray-900 py-2.5 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-200">
+                                        <Link to="/clientes" className="font-medium text-sm text-gray-900 py-2.5 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-200">
                                             <motion.div whileHover={{ rotate: 20 }}>
                                                 <AdminPanelSettingsOutlinedIcon className='mr-4' />
                                             </motion.div>
