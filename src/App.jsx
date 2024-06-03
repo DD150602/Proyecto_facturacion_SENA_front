@@ -2,8 +2,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import HomeAdmin from "./pages/admin/homeAdmin";
 import HomeVendedor from "./pages/vendedor/homeVendedor";
+
 import ClientesAdmin from "./pages/admin/clientesAdmin";
+
+import ZonasAdmin from "./pages/admin/zonasAdmin";
+
 import ProtectedRoute from "./service/route";
+import Productos from "./pages/admin/Productos";
 
 function App() {
   return (
@@ -20,6 +25,15 @@ function App() {
           }
         />
         <Route
+          path='/inventario'
+          element={
+            <ProtectedRoute
+              elemento={<Productos />}
+              rolesPermitidos={[1]}
+            />
+          }
+        />
+        <Route
           path="/dashboard_vendedor"
           element={
             <ProtectedRoute
@@ -29,10 +43,17 @@ function App() {
           }
         />
         <Route
+
           path="/clientes"
           element={
             <ProtectedRoute
               elemento={<ClientesAdmin />}
+
+          path="/zonas"
+          element={
+            <ProtectedRoute
+              elemento={<ZonasAdmin />}
+
               rolesPermitidos={[1]}
             />
           }

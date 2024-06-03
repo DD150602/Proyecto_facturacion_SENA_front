@@ -1,4 +1,4 @@
-import api from './conection'
+import { api } from './conection'
 export const getDataById = async ({ id, endpoind, defaultValues }) => {
   if (id !== null && id) {
     try {
