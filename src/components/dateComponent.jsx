@@ -19,7 +19,8 @@ export default function InputDate (props) {
     blockPastDates = false,
     views = ['year', 'month', 'day'],
     error = false,
-    helperText = ''
+    helperText = '',
+    blockFutureDates = false
   } = props
 
   const [value, setValue] = useState(dayjs(fecha))
@@ -44,6 +45,7 @@ export default function InputDate (props) {
           required={required}
           disabled={disabled}
           minDate={blockPastDates ? dayjs() : undefined}
+          maxDate={blockFutureDates ? dayjs() : undefined}
           views={views}
           renderInput={(params) => <TextField {...params} />}
         />
