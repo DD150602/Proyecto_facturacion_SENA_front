@@ -1,10 +1,9 @@
-import { Alert, Grid, IconButton, InputAdornment } from '@mui/material'
+import { Grid, Avatar } from '@mui/material'
 import React, { useState, useEffect } from 'react'
 import Input from './InputComponent'
 import useForm from '../hooks/UseForm'
-import useFormErrors from '../hooks/UseErrorForm'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { getDataById } from '../utils/getDataById'
+import AnimacionSvg from './animacionSVG'
 
 const defaultValues = {
   nombreProducto: '',
@@ -13,128 +12,64 @@ const defaultValues = {
   linkFotoProducto: ''
 }
 export default function VerProductosComponent (props) {
-  const [mostrarAlerta, setMostrarAlerta] = useState(false)
-  const [mensajeError, setMensajeError] = useState(false)
-
   const { id } = props
-  const { values, setValues, handleInputChange } = useForm(defaultValues)
-  const { valuesError, recognizeEmptyName } = useFormErrors(defaultValues)
+  const { values, setValues } = useForm(defaultValues)
+  const [avatar, setAvatar] = useState(null)
 
   useEffect(() => {
     const bringData = async () => {
       const { todosDatos, validacion } = await getDataById({ id, endpoind: 'products', defaultValues })
       if (validacion) {
-        if (todosDatos instanceof Error) {
-          setMensajeError(todosDatos)
-          setMostrarAlerta(true)
-        } else {
-          setValues(todosDatos)
-        }
+        setValues(todosDatos)
+        setAvatar(todosDatos.linkFotoProducto)
       }
     }
     bringData()
   }, [id])
   return (
-    <form className='overflow-y-scroll h-auto py-2'>
-      <h2 className='text-3xl text-center mb-2'>Visializar Producto</h2>
-      {mostrarAlerta && (
-        <Alert severity='error' variant='outlined' sx={{ width: '100%', marginBottom: '1rem' }}>
-          {mensajeError}
-        </Alert>
-      )}
-      <Grid container spacing={2} columns={12} className='max-w-[500px]'>
-        <Grid item xs={12} sm={6}>
-          <Input
-            id='nombreProducto'
-            label='Nombre del producto'
-            variant='outlined'
-            name='nombreProducto'
-            value={values.nombreProducto}
-            onChange={handleInputChange}
-            error={recognizeEmptyName('nombreProducto')}
-            helperText={valuesError.nombreProducto}
-            disabled
-            InputProps={{
-              endAdornment: recognizeEmptyName('nombreProducto') && (
-                <InputAdornment position='end'>
-                  <IconButton edge='end'>
-                    <ErrorOutlineIcon color='error' />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            className='mb-2'
-          />
+    <form className='rounded-lg'>
+      <Grid container spacing={2} columns={12} className='max-w-[600px]'>
+        <Grid item xs={12} sm={5}>
+          <div className='w-full h-full rounded-tl-lg rounded-bl-lg' style={{ position: 'relative', height: '100%' }}>
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 }}>
+              <Avatar alt='Avatar' src={avatar} sx={{ width: 150, height: 150 }} />
+            </div>
+            <AnimacionSvg />
+          </div>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Input
-            id='descripcionProducto'
-            label='Descripción del producto'
-            variant='outlined'
-            name='descripcionProducto'
-            value={values.descripcionProducto}
-            onChange={handleInputChange}
-            error={recognizeEmptyName('descripcionProducto')}
-            helperText={valuesError.descripcionProducto}
-            disabled
-            InputProps={{
-              endAdornment: recognizeEmptyName('descripcionProducto') && (
-                <InputAdornment position='end'>
-                  <IconButton edge='end'>
-                    <ErrorOutlineIcon color='error' />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            className='mb-2'
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Input
-            id='valorProducto'
-            label='Valor del producto'
-            variant='outlined'
-            name='valorProducto'
-            value={values.valorProducto}
-            onChange={handleInputChange}
-            error={recognizeEmptyName('valorProducto')}
-            helperText={valuesError.valorProducto}
-            type='number'
-            disabled
-            InputProps={{
-              endAdornment: recognizeEmptyName('valorProducto') && (
-                <InputAdornment position='end'>
-                  <IconButton edge='end'>
-                    <ErrorOutlineIcon color='error' />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            className='mb-2'
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Input
-            id='linkFotoProducto'
-            label='link de la imagen del producto'
-            variant='outlined'
-            name='linkFotoProducto'
-            value={values.linkFotoProducto}
-            onChange={handleInputChange}
-            error={recognizeEmptyName('linkFotoProducto')}
-            helperText={valuesError.linkFotoProducto}
-            disabled
-            InputProps={{
-              endAdornment: recognizeEmptyName('linkFotoProducto') && (
-                <InputAdornment position='end'>
-                  <IconButton edge='end'>
-                    <ErrorOutlineIcon color='error' />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            className='mb-2'
-          />
+        <Grid item xs={12} sm={7} className='pb-2'>
+          <h1 className='text-4xl text-center mt-3 mb-1 mr-8 text-blue-fond font-bold'>Informacion de tu producto</h1>
+          <Grid container spacing={2} columns={12} className='pl-2 pr-5 pb-1 pt-2'>
+            <Grid item xs={12} sm={12}>
+              <Input
+                id='nombreProducto'
+                label='Nombre del producto'
+                name='nombreProducto'
+                value={values.nombreProducto}
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <Input
+                id='descripcionProducto'
+                label='Descripción del producto'
+                name='descripcionProducto'
+                multiline
+                value={values.descripcionProducto}
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <Input
+                id='valorProducto'
+                label='Valor del producto'
+                name='valorProducto'
+                value={values.valorProducto}
+                type='number'
+                disabled
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </form>
