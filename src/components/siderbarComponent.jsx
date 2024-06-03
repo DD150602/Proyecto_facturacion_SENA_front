@@ -1,37 +1,46 @@
-import React from 'react'
-import Logo from '../assets/img/FTM.2.png'
-import Logo1 from '../assets/img/FTM.png'
-import { useUser } from '../utils/authContext'
-import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined'
-import FileOpenOutlinedIcon from '@mui/icons-material/FileOpenOutlined'
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined'
-import TravelExploreOutlinedIcon from '@mui/icons-material/TravelExploreOutlined'
-import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined'
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
-import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined'
-import PlagiarismOutlinedIcon from '@mui/icons-material/PlagiarismOutlined'
-import { motion } from 'framer-motion'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../utils/authContext';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import FileOpenOutlinedIcon from '@mui/icons-material/FileOpenOutlined';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import TravelExploreOutlinedIcon from '@mui/icons-material/TravelExploreOutlined';
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
+import PlagiarismOutlinedIcon from '@mui/icons-material/PlagiarismOutlined';
+import { motion } from 'framer-motion';
+import Logo from '../assets/img/FTM.2.png';
+import Logo1 from '../assets/img/FTM.png';
 
-function Sidebar () {
-  const { user, setUser } = useUser()
-  const navigate = useNavigate()
+function Sidebar() {
+  const { user, setUser } = useUser();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [activeItem, setActiveItem] = useState(location.pathname);
+
+  useEffect(() => {
+    setActiveItem(location.pathname);
+  }, [location.pathname]);
 
   const cerrarSession = () => {
-    setUser(null)
-    localStorage.removeItem('user')
-    navigate('/')
-  }
+    setUser(null);
+    localStorage.removeItem('user');
+    navigate('/');
+  };
+
+  const linkClasses = (path) =>
+    `font-medium text-sm py-2.5 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105 ${activeItem === path ? 'bg-gray-800 text-white' : 'text-gray-900 hover:bg-gray-800 hover:text-white'
+    }`;
 
   return (
     <>
       <div className='w-full'>
         <div className='bg-gray-800 h-16 flex justify-center items-center px-4'>
-          <img src={Logo} className='block btn- h-8 w-auto' alt='' />
-          <img src={Logo1} className='block btn- h-10 w-auto' alt='' />
+          <img src={Logo} className='block h-8 w-auto' alt='Logo' />
+          <img src={Logo1} className='block h-10 w-auto' alt='Logo1' />
           <div className='flex flex-col items-center ml-4'>
             <p className='text-xs text-gray-500 mb-1'>Bienvenido a tu puesto de trabajo</p>
-
           </div>
         </div>
       </div>
@@ -63,7 +72,10 @@ function Sidebar () {
                     transition={{ duration: 0.4 }}
                     whileHover={{ scale: 1.08 }}
                   >
-                    <Link to='#' className='font-medium text-sm text-gray-900 py-2.5 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-200'>
+                    <Link
+                      to='/clientes'
+                      className={linkClasses('/clientes')}
+                    >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <AdminPanelSettingsOutlinedIcon className='mr-4' />
                       </motion.div>
@@ -76,9 +88,12 @@ function Sidebar () {
                     transition={{ duration: 0.3, delay: 0.1 }}
                     whileHover={{ scale: 1.08 }}
                   >
-                    <Link to='#' className='font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200'>
+                    <Link
+                      to='#'
+                      className={linkClasses('/informes')}
+                    >
                       <motion.div whileHover={{ rotate: 20 }}>
-                        <FileOpenOutlinedIcon className='mr-4 ' />
+                        <FileOpenOutlinedIcon className='mr-4' />
                       </motion.div>
                       Informes
                     </Link>
@@ -89,7 +104,10 @@ function Sidebar () {
                     transition={{ duration: 0.3, delay: 0.2 }}
                     whileHover={{ scale: 1.08 }}
                   >
-                    <Link to='#' className='font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200'>
+                    <Link
+                      to='/inventario'
+                      className={linkClasses('/inventario')}
+                    >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <Inventory2OutlinedIcon className='mr-4' />
                       </motion.div>
@@ -102,12 +120,15 @@ function Sidebar () {
                     transition={{ duration: 0.3, delay: 0.3 }}
                     whileHover={{ scale: 1.08 }}
                   >
-                    <Link to="/zonas" className="font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200">
-                      <motion.div whileHover={{ rotate: 20 }} >
+                    <Link
+                      to='/zonas'
+                      className={linkClasses('/zonas')}
+                    >
+                      <motion.div whileHover={{ rotate: 20 }}>
                         <TravelExploreOutlinedIcon className='mr-4' />
                       </motion.div>
-                       Zonas
-                     </Link>
+                      Zonas
+                    </Link>
                   </motion.div>
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -115,7 +136,10 @@ function Sidebar () {
                     transition={{ duration: 0.3, delay: 0.4 }}
                     whileHover={{ scale: 1.08 }}
                   >
-                    <Link to='#' className='font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200'>
+                    <Link
+                      to='#'
+                      className={linkClasses('/usuarios')}
+                    >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <PersonAddAltOutlinedIcon className='mr-4' />
                       </motion.div>
@@ -133,9 +157,12 @@ function Sidebar () {
                     transition={{ duration: 0.3 }}
                     whileHover={{ scale: 1.08 }}
                   >
-                    <Link to='#' className='font-medium text-sm text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200'>
+                    <Link
+                      to='#'
+                      className={linkClasses('/factura')}
+                    >
                       <motion.div whileHover={{ rotate: 20 }}>
-                        <CreditScoreOutlinedIcon className='mr-4 bg-gray-700' />
+                        <CreditScoreOutlinedIcon className='mr-4' />
                       </motion.div>
                       Factura
                     </Link>
@@ -146,7 +173,10 @@ function Sidebar () {
                     transition={{ duration: 0.3, delay: 0.1 }}
                     whileHover={{ scale: 1.08 }}
                   >
-                    <Link to='#' className='font-medium text-sm mt-2 text-gray-900 py-2.5 transition duration-300 ease-in-out transform hover:scale-350 px-4 rounded-lg flex items-center hover:bg-gray-200'>
+                    <Link
+                      to='#'
+                      className={linkClasses('/informes-vendedor')}
+                    >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <PlagiarismOutlinedIcon className='mr-4' />
                       </motion.div>
@@ -164,20 +194,22 @@ function Sidebar () {
                 transition={{ duration: 0.3, delay: 0.5 }}
                 whileHover={{ scale: 1.08 }}
               >
-                <button onClick={cerrarSession} className='font-medium text-sm w-full text-gray-900 py-2.5 px-4 transition duration-100 ease-in-out transform hover:scale-500 rounded-lg flex items-center hover:bg-gray-200'>
+                <button
+                  onClick={cerrarSession}
+                  className='font-medium text-sm w-full text-gray-900 py-2.5 px-4 transition duration-100 ease-in-out transform hover:scale-500 rounded-lg flex items-center hover:bg-gray-200'
+                >
                   <motion.div whileHover={{ rotate: 20 }}>
                     <LogoutOutlinedIcon className='mr-2' />
                   </motion.div>
                   Salir
                 </button>
-
               </motion.div>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default Sidebar
+export default Sidebar;
