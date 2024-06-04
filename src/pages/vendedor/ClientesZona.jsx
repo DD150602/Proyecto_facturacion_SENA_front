@@ -27,7 +27,7 @@ export default function ClientesZona () {
     api.get(`/cliente/contacto/${user.id_zona}`)
       .then((res) => setRows(res.data))
       .catch((error) => {
-        setError(error.response.data)
+        setError(error.response.data.message)
         setRows([])
       })
   }, [])
@@ -37,7 +37,7 @@ export default function ClientesZona () {
       <Sidebar />
       <StackCumston>
         <Botonera title='Clientes en tu zona' />
-        <DataTable columns={columns} rows={rows} selectId={(id) => saveSelectId(id)} />
+        <DataTable columns={columns} rows={rows} />
         <AlertPrincipal message={success} severity='success' />
         <AlertPrincipal message={error} severity='error' />
       </StackCumston>
