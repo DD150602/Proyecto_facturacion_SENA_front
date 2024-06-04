@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import StackCumston from './stackComponent'
 import CustomModal from './modalComponent'
 import DataTable from './dataTable'
 import Botonera from './groupButton'
