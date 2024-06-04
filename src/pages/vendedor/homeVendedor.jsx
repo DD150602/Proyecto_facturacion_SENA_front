@@ -30,8 +30,8 @@ function HomeVendedor () {
     selectProduct: '',
     cedula: '',
     cantidad: '',
-    cantidadCuotasFactura: '',
-    idTipoCuota: '',
+    cantidadCuotasFactura: '', // Se manejará como string pero se convertirá a entero
+    idTipoCuota: '', // Lo guardamos como string, pero lo convertimos a entero al usarlo
     productosFacturas: [],
     valorBrutoFactura: '',
     valorNetoFactura: '',
@@ -67,6 +67,15 @@ function HomeVendedor () {
 
   const handleChange = (event) => {
     const { name, value } = event.target
+
+    if (name === 'cantidadCuotasFactura') {
+      const parsedValue = parseInt(value, 10)
+      if (isNaN(parsedValue) || parsedValue < 1) {
+        console.error('El número de cuotas debe ser un entero mayor que 0')
+        return
+      }
+    }
+
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value
@@ -85,7 +94,7 @@ function HomeVendedor () {
     event.preventDefault()
 
     const selectedProduct = productsData?.find(
-      (product) => product.id_producto === parseInt(formData.selectProduct, 10)
+      (product) => product.id === parseInt(formData.selectProduct, 10)
     )
 
     if (selectedProduct) {
@@ -100,10 +109,10 @@ function HomeVendedor () {
       setPrices((prevPrices) => [...prevPrices, precio])
 
       const newProduct = {
-        id: selectedProduct.id_producto,
-        nombre: selectedProduct.nombre_producto,
+        idProducto: selectedProduct.id,
+        nombre: selectedProduct.value,
         cantidad,
-        precio
+        valorProducto: precio
       }
 
       setProducts((prevProducts) => [...prevProducts, newProduct])
