@@ -155,8 +155,8 @@ function Sidebar() {
                     whileHover={{ scale: 1.08 }}
                   >
                     <Link
-                      to='#'
-                      className={linkClasses('/factura')}
+                      to='/dashboard_vendedor'
+                      className={linkClasses('/dashboard_vendedor')}
                     >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <CreditScoreOutlinedIcon className='mr-4' />
