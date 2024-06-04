@@ -6,7 +6,9 @@ import ZonasAdmin from "./pages/admin/zonasAdmin";
 import ClientesAdmin from "./pages/admin/clientesAdmin";
 import ProtectedRoute from "./service/route";
 import Productos from "./pages/admin/Productos";
+import InformeVentas from "./pages/admin/informeVentas";
 import InformeVendedor from "./pages/vendedor/informeVendedor";
+
 
 function App() {
   return (
@@ -27,6 +29,15 @@ function App() {
           element={
             <ProtectedRoute
               elemento={<Productos />}
+              rolesPermitidos={[1]}
+            />
+          }
+        />
+        <Route
+          path='/informesVentas'
+          element={
+            <ProtectedRoute
+              elemento={<InformeVentas />}
               rolesPermitidos={[1]}
             />
           }
