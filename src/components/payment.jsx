@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
-import Sidebar from '../../components/siderbarComponent'
-import StackCumston from '../../components/stackComponent'
-import CustomModal from '../../components/modalComponent'
-import DataTable from '../../components/dataTable'
-import Botonera from '../../components/groupButton'
+import StackCumston from './stackComponent'
+import CustomModal from './modalComponent'
+import DataTable from './dataTable'
+import Botonera from './groupButton'
 import AddIcon from '@mui/icons-material/Add'
-import { api } from '../../utils/conection'
-import { useUser } from '../../utils/authContext'
-import useSelectId from '../../hooks/useSelectId'
-import GenerarAbonos from '../../components/generarAbono'
-import AlertPrincipal from '../../components/alertSucces'
+import { api } from '../utils/conection'
+import { useUser } from '../utils/authContext'
+import useSelectId from '../hooks/useSelectId'
+import GenerarAbonos from './generarAbono'
+import AlertPrincipal from './alertSucces'
 import dayjs from 'dayjs'
 
 const columns = [
@@ -31,15 +30,23 @@ const columns = [
     field: 'fecha_proximo_pago',
     headerName: 'Fecha Pago',
     width: 150,
-    getCellClassName: (params) => {
-      const today = dayjs().startOf('day')
-      const fechaProximoPago = dayjs(params.value, 'YYYY-MM-DD')
-      return fechaProximoPago.isBefore(today) ? 'fecha-pago-vencida' : ''
-    }
+    renderCell: (params) => (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: params.value === dayjs().format('YYYY-MM-DD') ? 'green' : 'red',
+        color: 'white',
+        borderRadius: '5px',
+        padding: '5px'
+      }}
+      >
+        {params.value}
+      </div>
+    )
   }
 ]
 
-function PaymentPage () {
+function PaymentComponent () {
   const { user } = useUser()
   const [rows, setRows] = useState([])
   const [actualizar, setActualizar] = useState(false)
@@ -58,18 +65,14 @@ function PaymentPage () {
 
   return (
     <>
-      <Sidebar />
-      <StackCumston>
-        <Botonera
-          title='Ingresa Nuevos Abonos'
-          agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' disabled={!selectId} padding={0}><GenerarAbonos setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
-        />
-        <DataTable columns={columns} rows={rows} selectId={(id) => saveSelectId(id)} />
-      </StackCumston>
+      <Botonera
+        agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' disabled={!selectId} padding={0}><GenerarAbonos setActualizar={setActualizar} setInfo={setInfo} id={selectId} /></CustomModal>}
+      />
+      <DataTable columns={columns} rows={rows} selectId={(id) => saveSelectId(id)} />
       <AlertPrincipal message={info} severity='success' />
       <AlertPrincipal message={error} severity='error' />
     </>
   )
 }
 
-export default PaymentPage
+export default PaymentComponent
