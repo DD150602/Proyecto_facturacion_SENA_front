@@ -19,6 +19,16 @@ function multiplicacion (a, b) {
   return parseInt(a, 10) * parseInt(b, 10)
 }
 
+function calcularFechaProximoPago (idTipoCuota, today) {
+  const futureDate = new Date(today)
+  if (idTipoCuota === 1) {
+    futureDate.setDate(today.getDate() + 15)
+  } else if (idTipoCuota === 2) {
+    futureDate.setDate(today.getDate() + 30)
+  }
+  return dayjs(futureDate).format('YYYY-MM-DD')
+}
+
 function HomeVendedor () {
   const { user } = useUser()
   const today = new Date()
@@ -30,19 +40,24 @@ function HomeVendedor () {
     selectProduct: '',
     cedula: '',
     cantidad: '',
-    cantidadCuotasFactura: '',
-    idTipoCuota: '',
+    cantidadCuotasFactura: '', // Se manejará como string pero se convertirá a entero
+    idTipoCuota: '', // Lo guardamos como string, pero lo convertimos a entero al usarlo
     productosFacturas: [],
     valorBrutoFactura: '',
     valorNetoFactura: '',
     fechaProximoPago: '',
     idUsuario: user.id,
-    idCliente: ''
+    idCliente: '',
+    correoUsuario: '',
+    nombreUsuario: '',
+    apellidoUsuario: ''
   })
   const [info, setInfo] = useState('')
+  const [errores, setErrores] = useState('')
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const [actualizar, setActualizar] = useState(false)
-  const { data: productsData, error: productsError } = useDataPreload('/products/')
+
+  const { data: productsData, error: productsError } = useDataPreload('/facturas/ver-products')
   const { data: cuotasData, error: cuotasError } = useDataPreload('/facturas/ver-tipo-cuota')
   const { data: clientData, refetchData } = useDataPreload('cliente/todos/clientes')
 
@@ -57,67 +72,127 @@ function HomeVendedor () {
   }, [])
 
   useEffect(() => {
+    setErrores('')
     if (productsError) {
-      console.error('Error fetching products:', productsError.message)
+      setErrores('Error fetching products:', productsError.message)
     }
     if (cuotasError) {
-      console.error('Error fetching tipo de cuota:', cuotasError.message)
+      setErrores('Error fetching tipo de cuota:', cuotasError.message)
     }
   }, [productsError, cuotasError])
 
-  const handleChange = (event) => {
-    const { name, value } = event.target
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value
-    }))
-  }
+  useEffect(() => {
+    refetchData()
+  }, [actualizar])
 
   const handleAutocompleteChange = (name, newValue) => {
-    console.log()
     setFormData((prevValues) => ({
       ...prevValues,
       [name]: newValue
     }))
   }
 
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    setErrores('')
+    if (name === 'cantidadCuotasFactura') {
+      const parsedValue = parseInt(value, 10)
+      if (isNaN(parsedValue) || parsedValue < 1) {
+        setErrores('El número de cuotas debe ser un entero mayor que 0')
+        return
+      }
+    }
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: name === 'idTipoCuota' || name === 'cantidadCuotasFactura' ? parseInt(value, 10) : value
+    }))
+  }
+
   const handleAgregar = (event) => {
     event.preventDefault()
+    setErrores('')
 
     const selectedProduct = productsData?.find(
-      (product) => product.id_producto === parseInt(formData.selectProduct, 10)
+      (product) => product.id === parseInt(formData.selectProduct, 10)
     )
 
     if (selectedProduct) {
       const cantidad = parseInt(formData.cantidad, 10)
       if (isNaN(cantidad) || cantidad <= 0) {
-        console.error('Cantidad inválida')
+        setErrores('Cantidad inválida')
         return
       }
 
       const precio = multiplicacion(selectedProduct.valor_producto, cantidad)
 
-      setPrices((prevPrices) => [...prevPrices, precio])
+      setPrices((prevPrices) => {
+        const existingIndex = prevPrices.findIndex(
+          (product) => product.id === selectedProduct.id
+        )
+        if (existingIndex >= 0) {
+          const updatedPrices = [...prevPrices]
+          updatedPrices[existingIndex] += precio
+          return updatedPrices
+        }
+        return [...prevPrices, precio]
+      })
 
-      const newProduct = {
-        id: selectedProduct.id_producto,
-        nombre: selectedProduct.nombre_producto,
-        cantidad,
-        precio
-      }
+      setProducts((prevProducts) => {
+        const existingProduct = prevProducts.find(
+          (product) => product.id === selectedProduct.id
+        )
 
-      setProducts((prevProducts) => [...prevProducts, newProduct])
+        if (existingProduct) {
+          return prevProducts.map((product) =>
+            product.id === selectedProduct.id
+              ? { ...product, cantidad: product.cantidad + cantidad, precio: product.precio + precio }
+              : product
+          )
+        } else {
+          const newProduct = {
+            id: selectedProduct.id,
+            nombre: selectedProduct.value,
+            cantidad,
+            precio
+          }
+          return [...prevProducts, newProduct]
+        }
+      })
 
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        productosFacturas: [...prevFormData.productosFacturas, newProduct]
-      }))
+      setFormData((prevFormData) => {
+        const existingProduct = prevFormData.productosFacturas.find(
+          (product) => product.id === selectedProduct.id
+        )
+
+        if (existingProduct) {
+          return {
+            ...prevFormData,
+            productosFacturas: prevFormData.productosFacturas.map((product) =>
+              product.id === selectedProduct.id
+                ? { ...product, cantidad: product.cantidad + cantidad, precio: product.precio + precio }
+                : product
+            )
+          }
+        } else {
+          const newProduct = {
+            id: selectedProduct.id,
+            nombre: selectedProduct.value,
+            cantidad,
+            precio
+          }
+          return {
+            ...prevFormData,
+            productosFacturas: [...prevFormData.productosFacturas, newProduct]
+          }
+        }
+      })
     } else {
-      console.error('Producto no encontrado')
+      setErrores('Producto no encontrado')
     }
   }
 
-  const calcularTotal = () => {
+  useEffect(() => {
     const totalCalculado = prices.reduce((acc, curr) => acc + curr, 0)
     const ivaCalculado = totalCalculado * 0.19 // IVA del 19%
     setTotal(totalCalculado + ivaCalculado)
@@ -128,27 +203,12 @@ function HomeVendedor () {
       valorBrutoFactura: totalCalculado,
       valorNetoFactura: totalCalculado + ivaCalculado
     }))
-  }
-
-  useEffect(() => {
-    calcularTotal()
   }, [prices])
 
   useEffect(() => {
-    refetchData()
-  }, [actualizar])
-
-  useEffect(() => {
-    const futureDate = new Date(today)
-    if (formData.idTipoCuota === '1') {
-      futureDate.setDate(today.getDate() + 15)
-    } else if (formData.idTipoCuota === '2') {
-      futureDate.setDate(today.getDate() + 30)
-    }
-    const futureFormattedDate = dayjs(futureDate).format('YYYY-MM-DD')
     setFormData((prevFormData) => ({
       ...prevFormData,
-      fechaProximoPago: futureFormattedDate
+      fechaProximoPago: calcularFechaProximoPago(formData.idTipoCuota, today)
     }))
   }, [formData.idTipoCuota, today])
 
@@ -161,27 +221,55 @@ function HomeVendedor () {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    setErrores('')
+    setInfo('')
+    if (formData.productosFacturas.length === 0) {
+      setErrores('No se puede crear una factura sin productos')
+      return
+    }
+    if (formData.cedula === '' || formData.cedula === null) {
+      setErrores('No ha seleccionado un cliente')
+      return
+    }
+    if (formData.idTipoCuota === '') {
+      setErrores('No ha seleccionado un tipo de cuota')
+      return
+    }
     try {
-      const clientResponse = await api.get(`/cliente/${formData.cedula}`)
+      const clientResponse = await api.get(`/cliente/${formData.cedula.id}`)
       const clientId = clientResponse.data.id
+      const primerNombre = clientResponse.data.primer_nombre_cliente
+      const primerApellido = clientResponse.data.primer_apellido_cliente
+      const correo = clientResponse.data.correo_cliente
       const updatedFormData = {
         ...formData,
         idCliente: clientId,
-        fechaProximoPago:
-          formData.idTipoCuota === '1'
-            ? dayjs().add(15, 'day').format('YYYY-MM-DD')
-            : dayjs().add(30, 'day').format('YYYY-MM-DD')
+        correoUsuario: correo,
+        nombreUsuario: primerNombre,
+        apellidoUsuario: primerApellido,
+        fechaProximoPago: calcularFechaProximoPago(formData.idTipoCuota, today)
       }
 
       const facturaResponse = await api.post('/facturas/create', updatedFormData)
       console.log('Respuesta de la creación de factura:', facturaResponse)
       if (facturaResponse.status === 200) {
-        console.log('Factura creada exitosamente!')
+        setInfo('Factura creada exitosamente!')
       } else {
-        console.error('Error al crear factura. Detalles:', facturaResponse.data)
+        setErrores('Error al crear factura. Detalles:', facturaResponse.data)
       }
+
+      const facturaResponseSend = await api.post('/facturas/send-factura', updatedFormData)
+      console.log('Respuesta de la creación de factura:', facturaResponseSend)
+      if (facturaResponseSend.status === 200) {
+        setInfo('Factura creada exitosamente!')
+      } else {
+        setErrores('Error al crear factura. Detalles:', facturaResponseSend.data)
+      }
+
+      // eslint-disable-next-line no-undef
+      setInfo('Enviado')
     } catch (error) {
-      console.error('Error creando factura:', error.message)
+      setErrores('Error creando factura:', error.message)
     }
   }
 
@@ -199,10 +287,10 @@ function HomeVendedor () {
         <Box display='flex' mt={2} mx={3}>
           <Box flex={1} mr={2}>
             <form onSubmit={handleSubmit}>
-              <Grid container spacing={2}>
+              <Grid container spacing={2} className='bg-white pb-4 pr-4 pt-2 rounded-xl '>
                 <Grid item xs={12}>
                   <Select
-                    id='select-product'
+                    id='selectProduct'
                     label='Seleccione los productos'
                     name='selectProduct'
                     onChange={handleChange}
@@ -210,8 +298,8 @@ function HomeVendedor () {
                     items={
                       productsData
                         ? productsData.map((product) => ({
-                          id: product.id_producto,
-                          value: product.nombre_producto,
+                          id: product.id,
+                          value: product.value,
                           precio: product.valor_producto
                         }))
                         : []
@@ -222,6 +310,7 @@ function HomeVendedor () {
                     helperText='Seleccione una opción'
                   />
                 </Grid>
+
                 <Grid item xs={12}>
                   <Input
                     id='cantidad'
@@ -304,6 +393,7 @@ function HomeVendedor () {
         </Box>
       </StackCustom>
       <AlertPrincipal message={info} severity='success' />
+      <AlertPrincipal message={errores} severity='error' />
     </div>
   )
 }

@@ -6,7 +6,9 @@ import ZonasAdmin from "./pages/admin/zonasAdmin";
 import ClientesAdmin from "./pages/admin/clientesAdmin";
 import ProtectedRoute from "./service/route";
 import Productos from "./pages/admin/Productos";
-import PaymentPage from "./pages/vendedor/payment";
+import InformeVentas from "./pages/admin/informeVentas";
+import InformeVendedor from "./pages/vendedor/informeVendedor";
+
 
 function App() {
   return (
@@ -32,19 +34,19 @@ function App() {
           }
         />
         <Route
-          path="/dashboard_vendedor"
+          path='/informesVentas'
           element={
             <ProtectedRoute
-              elemento={<HomeVendedor />}
-              rolesPermitidos={[2]}
+              elemento={<InformeVentas />}
+              rolesPermitidos={[1]}
             />
           }
         />
         <Route
-          path="/abonos"
+          path="/dashboard_vendedor"
           element={
             <ProtectedRoute
-              elemento={<PaymentPage />}
+              elemento={<HomeVendedor />}
               rolesPermitidos={[2]}
             />
           }
@@ -64,6 +66,15 @@ function App() {
             <ProtectedRoute
               elemento={<ClientesAdmin />}
               rolesPermitidos={[1]}
+            />
+          }
+        />
+        <Route
+          path="/informes"
+          element={
+            <ProtectedRoute
+              elemento={<InformeVendedor />}
+              rolesPermitidos={[2]}
             />
           }
         />

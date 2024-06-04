@@ -88,10 +88,7 @@ function Sidebar() {
                     transition={{ duration: 0.3, delay: 0.1 }}
                     whileHover={{ scale: 1.08 }}
                   >
-                    <Link
-                      to='#'
-                      className={linkClasses('/informes')}
-                    >
+                    <Link to='/informesVentas' className={linkClasses('/informesVentas')}>
                       <motion.div whileHover={{ rotate: 20 }}>
                         <FileOpenOutlinedIcon className='mr-4' />
                       </motion.div>
@@ -137,8 +134,8 @@ function Sidebar() {
                     whileHover={{ scale: 1.08 }}
                   >
                     <Link
-                      to='#'
-                      className={linkClasses('/usuarios')}
+                      to='/dashboard_admin'
+                      className={linkClasses('/dashboard_admin')}
                     >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <PersonAddAltOutlinedIcon className='mr-4' />
@@ -158,8 +155,8 @@ function Sidebar() {
                     whileHover={{ scale: 1.08 }}
                   >
                     <Link
-                      to='#'
-                      className={linkClasses('/factura')}
+                      to='/dashboard_vendedor'
+                      className={linkClasses('/dashboard_vendedor')}
                     >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <CreditScoreOutlinedIcon className='mr-4' />
@@ -174,8 +171,8 @@ function Sidebar() {
                     whileHover={{ scale: 1.08 }}
                   >
                     <Link
-                      to='#'
-                      className={linkClasses('/informes-vendedor')}
+                      to='/informes'
+                      className={linkClasses('/informes')}
                     >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <PlagiarismOutlinedIcon className='mr-4' />
