@@ -12,8 +12,9 @@ const defaultValues = {
   descripcionZona: ''
 }
 
-export default function AgregarZona () {
-  const { values, handleInputChange } = useForm(defaultValues)
+export default function AgregarZona (props) {
+  const { setActualizar } = props
+  const { values, handleInputChange, setValues } = useForm(defaultValues)
   const { valuesError, setValuesError, handleSettingError, recognizeEmptyName } = useFormErrors(defaultValues)
   const [generalError, setGeneralError] = useState('')
   const [openSnackbar, setOpenSnackbar] = useState(false)
@@ -27,6 +28,10 @@ export default function AgregarZona () {
       const response = await axios.post('http://localhost:4321/zona/crear_zona', values)
       setSnackbarMessage(response.data.message || 'Zona agregada con éxito')
       setOpenSnackbar(true)
+      setActualizar(prevValuesError => (
+        !prevValuesError
+      ))
+      setValues(defaultValues)
     } catch (error) {
       let errorMessage = 'Error de autenticación'
       if (error.response.data.objectError) goOverErrors(error.response.data.objectError, handleSettingError)
