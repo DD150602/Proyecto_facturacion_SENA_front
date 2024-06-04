@@ -88,7 +88,7 @@ function Sidebar() {
                     transition={{ duration: 0.3, delay: 0.1 }}
                     whileHover={{ scale: 1.08 }}
                   >
-                    <Link to='/informes' className='font-medium text-sm mt-2 text-gray-900 py-2.5 px-4 transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center hover:bg-gray-200'>
+                    <Link to='/informes' className={linkClasses('/informes')}>
                       <motion.div whileHover={{ rotate: 20 }}>
                         <FileOpenOutlinedIcon className='mr-4' />
                       </motion.div>
