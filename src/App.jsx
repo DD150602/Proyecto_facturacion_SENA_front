@@ -7,6 +7,8 @@ import ClientesAdmin from "./pages/admin/clientesAdmin";
 import ProtectedRoute from "./service/route";
 import Productos from "./pages/admin/Productos";
 import InformeVentas from "./pages/admin/informeVentas";
+import InformeVendedor from "./pages/vendedor/informeVendedor";
+
 
 function App() {
   return (
@@ -64,6 +66,15 @@ function App() {
             <ProtectedRoute
               elemento={<ClientesAdmin />}
               rolesPermitidos={[1]}
+            />
+          }
+        />
+        <Route
+          path="/informes"
+          element={
+            <ProtectedRoute
+              elemento={<InformeVendedor />}
+              rolesPermitidos={[2]}
             />
           }
         />

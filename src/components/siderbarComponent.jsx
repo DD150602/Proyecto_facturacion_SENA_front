@@ -171,8 +171,8 @@ function Sidebar() {
                     whileHover={{ scale: 1.08 }}
                   >
                     <Link
-                      to='#'
-                      className={linkClasses('/informes-vendedor')}
+                      to='/informes'
+                      className={linkClasses('/informes')}
                     >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <PlagiarismOutlinedIcon className='mr-4' />
