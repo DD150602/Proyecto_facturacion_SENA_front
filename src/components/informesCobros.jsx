@@ -26,8 +26,7 @@ const columns = [
         field: 'nombre_cliente', headerName: 'Nombre Cliente', width: 150,
         valueGetter: (params) => `${params.row.nombre_cliente} ${params.row.apellido_cliente}`
     },
-    { field: 'nombre_producto', headerName: 'Producto', width: 100 },
-    { field: 'valor_producto', headerName: 'Valor Producto', width: 150 },
+    { field: 'id', headerName: 'Numero Factura', width: 150 },
     { field: 'numero_cuota', headerName: 'Cuota', width: 100 },
     { field: 'valor_cuota', headerName: 'Valor Cuota', width: 100 },
     { field: 'entidad_bancaria', headerName: 'Banco', width: 150 },
