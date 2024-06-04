@@ -124,8 +124,8 @@ export default function ZonasAdmin () {
       <StackCumston>
         <Botonera
           title='Gestiona tus zonas'
-          agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar'><AgregarZona setActualizar={setActualizar} /></CustomModal>}
-          editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' disabled={!selectedZonas}><UpdateZona id={selectedZonas} setActualizar={setActualizar} /></CustomModal>}
+          agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' padding={0}><AgregarZona setActualizar={setActualizar} /></CustomModal>}
+          editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' disabled={!selectedZonas} padding={0}><UpdateZona id={selectedZonas} setActualizar={setActualizar} /></CustomModal>}
         />
         <div className='flex flex-col md:flex-row items-start'>
           <div className='w-full md:w-1/2 px-4'>
