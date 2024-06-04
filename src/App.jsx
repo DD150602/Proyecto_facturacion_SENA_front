@@ -9,13 +9,14 @@ import Productos from './pages/admin/Productos'
 import InformeVentas from './pages/admin/informeVentas'
 import InformeVendedor from './pages/vendedor/informeVendedor'
 import ClientesZona from './pages/vendedor/ClientesZona'
+import ViewProducts from './pages/products'
 
 function App () {
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Login />} />
-        <Route path='/products' element={<Login />} />
+        <Route path='/products' element={<ViewProducts />} />
         <Route
           path='/dashboard_admin'
           element={
