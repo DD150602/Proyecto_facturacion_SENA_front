@@ -24,6 +24,7 @@ export default function ClientesAdmin () {
   const [filteredClientes, setFilteredClientes] = useState([])
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const { data: clientData } = useDataPreload('cliente/todos/clientes')
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
 
   const handleAutocompleteChange = (name, newValue) => {
     setValues((prevValues) => ({
@@ -78,6 +79,16 @@ export default function ClientesAdmin () {
     }
 
     fetchClientes()
+  }, [])
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
 
   const handleCloseSnackbar = () => {
@@ -144,10 +155,20 @@ export default function ClientesAdmin () {
                     <foreignObject x='0' y='220' width='100%' height='200'>
                       <div className='flex justify-center mt-2 gap-20 ' xmlns='http://www.w3.org/1999/xhtml'>
                         <IconButton className='text-white mx-4' style={{ transform: 'scale(2.0)' }}>
-                          <CustomModal icon={<ShoppingBagOutlinedIcon />} bgColor='success' tooltip='Historial de compra'><><HistorialCompras id={cliente.id} /></></CustomModal>
+                          <CustomModal
+                            icon={<ShoppingBagOutlinedIcon />} bgColor='success' tooltip='Historial de compra' padding={0}
+                            top={screenWidth <= 1400 ? '0%' : '15%'}
+                            left={screenWidth <= 1400 ? '15%' : '25%'}
+                          ><><HistorialCompras id={cliente.id} /></>
+                          </CustomModal>
                         </IconButton>
                         <IconButton className='text-white mx-4' style={{ transform: 'scale(2.0)' }}>
-                          <CustomModal icon={<ManageAccountsOutlinedIcon />} tooltip='Editar Cliente'><EditarCliente id={cliente.id} /></CustomModal>
+                          <CustomModal
+                            icon={<ManageAccountsOutlinedIcon />} tooltip='Editar Cliente' padding={0}
+                            top={screenWidth <= 1400 ? '0%' : '15%'}
+                            left={screenWidth <= 1400 ? '15%' : '25%'}
+                          ><EditarCliente id={cliente.id} />
+                          </CustomModal>
                         </IconButton>
                       </div>
                     </foreignObject>
