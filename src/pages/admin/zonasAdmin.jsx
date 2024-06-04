@@ -83,7 +83,7 @@ export default function ZonasAdmin () {
     }
     try {
       const response = await axios.patch(`http://localhost:4321/zona/add_user/${vendedor.id}`, {
-        id: selectedZonas
+        idZona: selectedZonas
       })
       console.log('Zona vinculada correctamente:', response.data)
       const primerNombre = vendedor.primer_nombre_usuario

@@ -129,7 +129,7 @@ export default function ClientesAdmin () {
         <div className='w-full mt-6'>
           <h2 className='text-xl font-semibold mb-4'>Todos los Clientes</h2>
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
-            {filteredClientes.map((cliente, index) => (
+            {filteredClientes && filteredClientes.map((cliente, index) => (
               <div key={cliente.id} className='bg-gray-800 rounded-xl shadow-lg p-8 relative overflow-hidden min-h-[400px]'>
                 <div className='flex items-center mb-4 text-gray-100'>
                   {cliente.link_foto_cliente
