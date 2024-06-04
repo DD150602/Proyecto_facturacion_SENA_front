@@ -5,7 +5,7 @@ function StackCumston({ children }) {
         <Stack
             sx={{
                 position: 'fixed',
-                top: 110,
+                top: 60,
                 right: 15,
                 bottom: 40,
                 left: 'calc(16rem + 4px)',
