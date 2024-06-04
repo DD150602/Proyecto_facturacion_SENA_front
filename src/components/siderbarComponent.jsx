@@ -134,8 +134,8 @@ function Sidebar() {
                     whileHover={{ scale: 1.08 }}
                   >
                     <Link
-                      to='#'
-                      className={linkClasses('/usuarios')}
+                      to='/dashboard_admin'
+                      className={linkClasses('/dashboard_admin')}
                     >
                       <motion.div whileHover={{ rotate: 20 }}>
                         <PersonAddAltOutlinedIcon className='mr-4' />
