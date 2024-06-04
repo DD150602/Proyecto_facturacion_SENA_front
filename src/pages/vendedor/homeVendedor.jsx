@@ -10,13 +10,19 @@ import useDataPreload from '../../hooks/useDataReload'
 import { useUser } from '../../utils/authContext'
 import { api } from '../../utils/conection'
 import dayjs from 'dayjs'
-import AgregarCliente from '../../components/CrearCliente'
-import CustomModal from '../../components/modalComponent'
-import AutocompleteComponent from '../../components/autocompletComponent'
-import AlertPrincipal from '../../components/alertSucces'
 
 function multiplicacion (a, b) {
   return parseInt(a, 10) * parseInt(b, 10)
+}
+
+function calcularFechaProximoPago (idTipoCuota, today) {
+  const futureDate = new Date(today)
+  if (idTipoCuota === 1) {
+    futureDate.setDate(today.getDate() + 15)
+  } else if (idTipoCuota === 2) {
+    futureDate.setDate(today.getDate() + 30)
+  }
+  return dayjs(futureDate).format('YYYY-MM-DD')
 }
 
 function HomeVendedor () {
@@ -37,24 +43,14 @@ function HomeVendedor () {
     valorNetoFactura: '',
     fechaProximoPago: '',
     idUsuario: user.id,
-    idCliente: ''
+    idCliente: '',
+    correoUsuario: '',
+    nombreUsuario: '',
+    apellidoUsuario: ''
   })
-  const [info, setInfo] = useState('')
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-  const [actualizar, setActualizar] = useState(false)
-  const { data: productsData, error: productsError } = useDataPreload('/products/')
-  const { data: cuotasData, error: cuotasError } = useDataPreload('/facturas/ver-tipo-cuota')
-  const { data: clientData, refetchData } = useDataPreload('cliente/todos/clientes')
 
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth)
-    }
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
+  const { data: productsData, error: productsError } = useDataPreload('/facturas/ver-products')
+  const { data: cuotasData, error: cuotasError } = useDataPreload('/facturas/ver-tipo-cuota')
 
   useEffect(() => {
     if (productsError) {
@@ -78,15 +74,7 @@ function HomeVendedor () {
 
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value
-    }))
-  }
-
-  const handleAutocompleteChange = (name, newValue) => {
-    console.log()
-    setFormData((prevValues) => ({
-      ...prevValues,
-      [name]: newValue
+      [name]: name === 'idTipoCuota' || name === 'cantidadCuotasFactura' ? parseInt(value, 10) : value
     }))
   }
 
@@ -109,10 +97,10 @@ function HomeVendedor () {
       setPrices((prevPrices) => [...prevPrices, precio])
 
       const newProduct = {
-        idProducto: selectedProduct.id,
+        id: selectedProduct.id,
         nombre: selectedProduct.value,
         cantidad,
-        valorProducto: precio
+        precio
       }
 
       setProducts((prevProducts) => [...prevProducts, newProduct])
@@ -126,7 +114,7 @@ function HomeVendedor () {
     }
   }
 
-  const calcularTotal = () => {
+  useEffect(() => {
     const totalCalculado = prices.reduce((acc, curr) => acc + curr, 0)
     const ivaCalculado = totalCalculado * 0.19 // IVA del 19%
     setTotal(totalCalculado + ivaCalculado)
@@ -137,27 +125,12 @@ function HomeVendedor () {
       valorBrutoFactura: totalCalculado,
       valorNetoFactura: totalCalculado + ivaCalculado
     }))
-  }
-
-  useEffect(() => {
-    calcularTotal()
   }, [prices])
 
   useEffect(() => {
-    refetchData()
-  }, [actualizar])
-
-  useEffect(() => {
-    const futureDate = new Date(today)
-    if (formData.idTipoCuota === '1') {
-      futureDate.setDate(today.getDate() + 15)
-    } else if (formData.idTipoCuota === '2') {
-      futureDate.setDate(today.getDate() + 30)
-    }
-    const futureFormattedDate = dayjs(futureDate).format('YYYY-MM-DD')
     setFormData((prevFormData) => ({
       ...prevFormData,
-      fechaProximoPago: futureFormattedDate
+      fechaProximoPago: calcularFechaProximoPago(formData.idTipoCuota, today)
     }))
   }, [formData.idTipoCuota, today])
 
@@ -172,14 +145,18 @@ function HomeVendedor () {
     event.preventDefault()
     try {
       const clientResponse = await api.get(`/cliente/${formData.cedula}`)
+      console.log(clientResponse)
       const clientId = clientResponse.data.id
+      const primerNombre = clientResponse.data.primer_nombre_cliente
+      const primerApellido = clientResponse.data.primer_apellido_cliente
+      const correo = clientResponse.data.correo_cliente
       const updatedFormData = {
         ...formData,
         idCliente: clientId,
-        fechaProximoPago:
-          formData.idTipoCuota === '1'
-            ? dayjs().add(15, 'day').format('YYYY-MM-DD')
-            : dayjs().add(30, 'day').format('YYYY-MM-DD')
+        correoUsuario: correo,
+        nombreUsuario: primerNombre,
+        apellidoUsuario: primerApellido,
+        fechaProximoPago: calcularFechaProximoPago(formData.idTipoCuota, today)
       }
 
       const facturaResponse = await api.post('/facturas/create', updatedFormData)
@@ -189,6 +166,17 @@ function HomeVendedor () {
       } else {
         console.error('Error al crear factura. Detalles:', facturaResponse.data)
       }
+
+      const facturaResponseSend = await api.post('/facturas/send-factura', updatedFormData)
+      console.log('Respuesta de la creación de factura:', facturaResponseSend)
+      if (facturaResponseSend.status === 200) {
+        console.log('Factura creada exitosamente!')
+      } else {
+        console.error('Error al crear factura. Detalles:', facturaResponseSend.data)
+      }
+
+      // eslint-disable-next-line no-undef
+      alert('Enviado')
     } catch (error) {
       console.error('Error creando factura:', error.message)
     }
@@ -211,7 +199,7 @@ function HomeVendedor () {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Select
-                    id='select-product'
+                    id='selectProduct'
                     label='Seleccione los productos'
                     name='selectProduct'
                     onChange={handleChange}
@@ -219,8 +207,8 @@ function HomeVendedor () {
                     items={
                       productsData
                         ? productsData.map((product) => ({
-                          id: product.id_producto,
-                          value: product.nombre_producto,
+                          id: product.id,
+                          value: product.value,
                           precio: product.valor_producto
                         }))
                         : []
@@ -231,6 +219,7 @@ function HomeVendedor () {
                     helperText='Seleccione una opción'
                   />
                 </Grid>
+
                 <Grid item xs={12}>
                   <Input
                     id='cantidad'
@@ -243,22 +232,18 @@ function HomeVendedor () {
                   />
                 </Grid>
                 <Grid item xs={12} container justifyContent='center'>
-                  <Button onClick={handleAgregar} text='Agregar producto' />
+                  <Button onClick={handleAgregar} text='Agregar' />
                 </Grid>
                 <Grid item xs={12}>
-                  <AutocompleteComponent
-                    options={clientData}
+                  <Input
                     id='cedula'
                     label='Cedula'
                     name='cedula'
+                    type='text'
+                    onChange={handleChange}
                     value={formData.cedula}
-                    onChange={handleAutocompleteChange}
+                    required
                   />
-                </Grid>
-                <Grid item xs={12} container justifyContent='end'>
-                  <CustomModal bgColor='primary' tooltip='Agregar' text='Agregar Cliente' top={screenWidth <= 1400 ? '0%' : '15%'} left={screenWidth <= 1400 ? '15%' : '25%'} padding={0}>
-                    <AgregarCliente setInfo={setInfo} setActualizar={setActualizar} className='justify-end' />
-                  </CustomModal>
                 </Grid>
                 <Grid item xs={12}>
                   <h1 className='text-center text-sky-800'>PAGOS</h1>
@@ -312,7 +297,6 @@ function HomeVendedor () {
           </Box>
         </Box>
       </StackCustom>
-      <AlertPrincipal message={info} severity='success' />
     </div>
   )
 }
