@@ -7,13 +7,19 @@ import CustomModal from '../../components/modalComponent'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 
 import { api } from '../../utils/conection'
+import useSelectId from '../../hooks/useSelectId'
+import VerInformeVentasComponent from '../../components/verInformeVentasComponent'
 
 export default function InformeVentas () {
   const [rows, setRows] = useState([])
 
+  const { selectId, saveSelectId } = useSelectId()
+
   const columns = [
     { field: 'nombre', headerName: 'Nombre', width: 150 },
-    { field: 'correo_usuario', headerName: 'Email', width: 200 }
+    { field: 'numero_documento_usuario', headerName: 'Documento', width: 150 },
+    { field: 'correo_usuario', headerName: 'Correo', width: 210 },
+    { field: 'descripcion_zona', headerName: 'Zona', width: 140 }
   ]
 
   useEffect(() => {
@@ -27,10 +33,19 @@ export default function InformeVentas () {
       <StackCumston>
         <Botonera
           title='Informes de ventas'
-          ver={<CustomModal bgColor='success' icon={<RemoveRedEyeIcon className='w-6 h-6 mr-1' />} tooltip='Visualizar' text='Visualizar' />}
-
+          ver={
+            <CustomModal
+              bgColor='success'
+              icon={<RemoveRedEyeIcon className='w-6 h-6 mr-1' />}
+              tooltip='Visualizar'
+              text='Visualizar'
+              disabled={!selectId}
+            >
+              <VerInformeVentasComponent id={selectId} />
+            </CustomModal>
+        }
         />
-        <DataTable rows={rows} columns={columns} />
+        <DataTable rows={rows} columns={columns} selectId={(id) => saveSelectId(id)} />
       </StackCumston>
     </>
   )
