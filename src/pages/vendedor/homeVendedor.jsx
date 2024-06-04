@@ -10,6 +10,10 @@ import useDataPreload from '../../hooks/useDataReload'
 import { useUser } from '../../utils/authContext'
 import { api } from '../../utils/conection'
 import dayjs from 'dayjs'
+import AgregarCliente from '../../components/CrearCliente'
+import CustomModal from '../../components/modalComponent'
+import AutocompleteComponent from '../../components/autocompletComponent'
+import AlertPrincipal from '../../components/alertSucces'
 
 function multiplicacion (a, b) {
   return parseInt(a, 10) * parseInt(b, 10)
@@ -48,26 +52,53 @@ function HomeVendedor () {
     nombreUsuario: '',
     apellidoUsuario: ''
   })
+  const [info, setInfo] = useState('')
+  const [errores, setErrores] = useState('')
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+  const [actualizar, setActualizar] = useState(false)
 
   const { data: productsData, error: productsError } = useDataPreload('/facturas/ver-products')
   const { data: cuotasData, error: cuotasError } = useDataPreload('/facturas/ver-tipo-cuota')
+  const { data: clientData, refetchData } = useDataPreload('cliente/todos/clientes')
 
   useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  useEffect(() => {
+    setErrores('')
     if (productsError) {
-      console.error('Error fetching products:', productsError.message)
+      setErrores('Error fetching products:', productsError.message)
     }
     if (cuotasError) {
-      console.error('Error fetching tipo de cuota:', cuotasError.message)
+      setErrores('Error fetching tipo de cuota:', cuotasError.message)
     }
   }, [productsError, cuotasError])
 
+  useEffect(() => {
+    refetchData()
+  }, [actualizar])
+
+  const handleAutocompleteChange = (name, newValue) => {
+    setFormData((prevValues) => ({
+      ...prevValues,
+      [name]: newValue
+    }))
+  }
+
   const handleChange = (event) => {
     const { name, value } = event.target
-
+    setErrores('')
     if (name === 'cantidadCuotasFactura') {
       const parsedValue = parseInt(value, 10)
       if (isNaN(parsedValue) || parsedValue < 1) {
-        console.error('El número de cuotas debe ser un entero mayor que 0')
+        setErrores('El número de cuotas debe ser un entero mayor que 0')
         return
       }
     }
@@ -80,6 +111,7 @@ function HomeVendedor () {
 
   const handleAgregar = (event) => {
     event.preventDefault()
+    setErrores('')
 
     const selectedProduct = productsData?.find(
       (product) => product.id === parseInt(formData.selectProduct, 10)
@@ -88,29 +120,75 @@ function HomeVendedor () {
     if (selectedProduct) {
       const cantidad = parseInt(formData.cantidad, 10)
       if (isNaN(cantidad) || cantidad <= 0) {
-        console.error('Cantidad inválida')
+        setErrores('Cantidad inválida')
         return
       }
 
       const precio = multiplicacion(selectedProduct.valor_producto, cantidad)
 
-      setPrices((prevPrices) => [...prevPrices, precio])
+      setPrices((prevPrices) => {
+        const existingIndex = prevPrices.findIndex(
+          (product) => product.id === selectedProduct.id
+        )
+        if (existingIndex >= 0) {
+          const updatedPrices = [...prevPrices]
+          updatedPrices[existingIndex] += precio
+          return updatedPrices
+        }
+        return [...prevPrices, precio]
+      })
 
-      const newProduct = {
-        id: selectedProduct.id,
-        nombre: selectedProduct.value,
-        cantidad,
-        precio
-      }
+      setProducts((prevProducts) => {
+        const existingProduct = prevProducts.find(
+          (product) => product.id === selectedProduct.id
+        )
 
-      setProducts((prevProducts) => [...prevProducts, newProduct])
+        if (existingProduct) {
+          return prevProducts.map((product) =>
+            product.id === selectedProduct.id
+              ? { ...product, cantidad: product.cantidad + cantidad, precio: product.precio + precio }
+              : product
+          )
+        } else {
+          const newProduct = {
+            id: selectedProduct.id,
+            nombre: selectedProduct.value,
+            cantidad,
+            precio
+          }
+          return [...prevProducts, newProduct]
+        }
+      })
 
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        productosFacturas: [...prevFormData.productosFacturas, newProduct]
-      }))
+      setFormData((prevFormData) => {
+        const existingProduct = prevFormData.productosFacturas.find(
+          (product) => product.id === selectedProduct.id
+        )
+
+        if (existingProduct) {
+          return {
+            ...prevFormData,
+            productosFacturas: prevFormData.productosFacturas.map((product) =>
+              product.id === selectedProduct.id
+                ? { ...product, cantidad: product.cantidad + cantidad, precio: product.precio + precio }
+                : product
+            )
+          }
+        } else {
+          const newProduct = {
+            id: selectedProduct.id,
+            nombre: selectedProduct.value,
+            cantidad,
+            precio
+          }
+          return {
+            ...prevFormData,
+            productosFacturas: [...prevFormData.productosFacturas, newProduct]
+          }
+        }
+      })
     } else {
-      console.error('Producto no encontrado')
+      setErrores('Producto no encontrado')
     }
   }
 
@@ -143,9 +221,22 @@ function HomeVendedor () {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    setErrores('')
+    setInfo('')
+    if (formData.productosFacturas.length === 0) {
+      setErrores('No se puede crear una factura sin productos')
+      return
+    }
+    if (formData.cedula === '' || formData.cedula === null) {
+      setErrores('No ha seleccionado un cliente')
+      return
+    }
+    if (formData.idTipoCuota === '') {
+      setErrores('No ha seleccionado un tipo de cuota')
+      return
+    }
     try {
-      const clientResponse = await api.get(`/cliente/${formData.cedula}`)
-      console.log(clientResponse)
+      const clientResponse = await api.get(`/cliente/${formData.cedula.id}`)
       const clientId = clientResponse.data.id
       const primerNombre = clientResponse.data.primer_nombre_cliente
       const primerApellido = clientResponse.data.primer_apellido_cliente
@@ -162,23 +253,23 @@ function HomeVendedor () {
       const facturaResponse = await api.post('/facturas/create', updatedFormData)
       console.log('Respuesta de la creación de factura:', facturaResponse)
       if (facturaResponse.status === 200) {
-        console.log('Factura creada exitosamente!')
+        setInfo('Factura creada exitosamente!')
       } else {
-        console.error('Error al crear factura. Detalles:', facturaResponse.data)
+        setErrores('Error al crear factura. Detalles:', facturaResponse.data)
       }
 
       const facturaResponseSend = await api.post('/facturas/send-factura', updatedFormData)
       console.log('Respuesta de la creación de factura:', facturaResponseSend)
       if (facturaResponseSend.status === 200) {
-        console.log('Factura creada exitosamente!')
+        setInfo('Factura creada exitosamente!')
       } else {
-        console.error('Error al crear factura. Detalles:', facturaResponseSend.data)
+        setErrores('Error al crear factura. Detalles:', facturaResponseSend.data)
       }
 
       // eslint-disable-next-line no-undef
-      alert('Enviado')
+      setInfo('Enviado')
     } catch (error) {
-      console.error('Error creando factura:', error.message)
+      setErrores('Error creando factura:', error.message)
     }
   }
 
@@ -196,7 +287,7 @@ function HomeVendedor () {
         <Box display='flex' mt={2} mx={3}>
           <Box flex={1} mr={2}>
             <form onSubmit={handleSubmit}>
-              <Grid container spacing={2}>
+              <Grid container spacing={2} className='bg-white pb-4 pr-4 pt-2 rounded-xl '>
                 <Grid item xs={12}>
                   <Select
                     id='selectProduct'
@@ -232,18 +323,22 @@ function HomeVendedor () {
                   />
                 </Grid>
                 <Grid item xs={12} container justifyContent='center'>
-                  <Button onClick={handleAgregar} text='Agregar' />
+                  <Button onClick={handleAgregar} text='Agregar producto' />
                 </Grid>
                 <Grid item xs={12}>
-                  <Input
+                  <AutocompleteComponent
+                    options={clientData}
                     id='cedula'
                     label='Cedula'
                     name='cedula'
-                    type='text'
-                    onChange={handleChange}
                     value={formData.cedula}
-                    required
+                    onChange={handleAutocompleteChange}
                   />
+                </Grid>
+                <Grid item xs={12} container justifyContent='end'>
+                  <CustomModal bgColor='primary' tooltip='Agregar' text='Agregar Cliente' top={screenWidth <= 1400 ? '0%' : '15%'} left={screenWidth <= 1400 ? '15%' : '25%'} padding={0}>
+                    <AgregarCliente setInfo={setInfo} setActualizar={setActualizar} className='justify-end' />
+                  </CustomModal>
                 </Grid>
                 <Grid item xs={12}>
                   <h1 className='text-center text-sky-800'>PAGOS</h1>
@@ -297,6 +392,8 @@ function HomeVendedor () {
           </Box>
         </Box>
       </StackCustom>
+      <AlertPrincipal message={info} severity='success' />
+      <AlertPrincipal message={errores} severity='error' />
     </div>
   )
 }
