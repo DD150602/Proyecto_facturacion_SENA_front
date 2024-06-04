@@ -12,12 +12,13 @@ const defaultValues = {
   descripcionZona: ''
 }
 
-export default function UpdateZona ({ id }) {
+export default function UpdateZona ({ id, setActualizar }) {
   const { values, setValues, handleInputChange } = useForm(defaultValues)
   const { valuesError, setValuesError, handleSettingError, recognizeEmptyName } = useFormErrors(defaultValues)
   const [generalError, setGeneralError] = useState('')
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
     const fetchZoneData = async () => {
@@ -33,16 +34,21 @@ export default function UpdateZona ({ id }) {
     }
 
     fetchZoneData()
+    setDisabled(false)
   }, [id, setValues])
 
   const updateZona = async (e) => {
     e.preventDefault()
     setValuesError(defaultValues)
     setGeneralError('')
+    setDisabled(true)
     try {
       const response = await axios.patch(`http://localhost:4321/zona/update_zona/${id}`, values)
       setSnackbarMessage(response.data.message || 'Zona actualizada con éxito')
       setOpenSnackbar(true)
+      setActualizar(prevValuesError => (
+        !prevValuesError
+      ))
     } catch (error) {
       let errorMessage = 'Error de autenticación'
       if (error.response.data.objectError) goOverErrors(error.response.data.objectError, handleSettingError)
@@ -52,6 +58,7 @@ export default function UpdateZona ({ id }) {
         errorMessage = error.message
       }
       setGeneralError(errorMessage)
+      setDisabled(false)
     }
   }
 
@@ -88,6 +95,7 @@ export default function UpdateZona ({ id }) {
               </InputAdornment>
             )
           }}
+          disabled={disabled}
         />
       </Grid>
       <Grid item xs={12}>
@@ -104,6 +112,7 @@ export default function UpdateZona ({ id }) {
           variant='outlined'
           error={recognizeEmptyName('descripcionZona')}
           helperText={valuesError.descripcionZona}
+          disabled={disabled}
         />
       </Grid>
       <Grid item xs={12} className='flex justify-center'>
@@ -111,6 +120,7 @@ export default function UpdateZona ({ id }) {
           type='submit'
           className='w-full bg-gray-800 text-white rounded-lg py-3 px-6 hover:bg-gray-700 transition duration-300 ease-in-out font-semibold'
           onClick={updateZona}
+          disabled={disabled}
         >
           Actualizar
         </button>
