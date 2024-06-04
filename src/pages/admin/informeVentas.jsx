@@ -12,6 +12,7 @@ import VerInformeVentasComponent from '../../components/verInformeVentasComponen
 
 export default function InformeVentas () {
   const [rows, setRows] = useState([])
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
 
   const { selectId, saveSelectId } = useSelectId()
 
@@ -27,6 +28,16 @@ export default function InformeVentas () {
       .then((res) => setRows(res.data))
   }, [])
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
   return (
     <>
       <Sidebar />
@@ -40,6 +51,9 @@ export default function InformeVentas () {
               tooltip='Visualizar'
               text='Visualizar'
               disabled={!selectId}
+              padding={0}
+              top={screenWidth <= 1400 ? '0%' : '15%'}
+              left={screenWidth <= 1400 ? '15%' : '25%'}
             >
               <VerInformeVentasComponent id={selectId} />
             </CustomModal>
