@@ -9,7 +9,6 @@ import DataTable from '../../components/dataTable'
 import useDataPreload from '../../hooks/useDataReload'
 import { useUser } from '../../utils/authContext'
 import { api } from '../../utils/conection'
-import dayjs from 'dayjs'
 import AgregarCliente from '../../components/CrearCliente'
 import CustomModal from '../../components/modalComponent'
 import AutocompleteComponent from '../../components/autocompletComponent'
@@ -18,20 +17,8 @@ import AlertPrincipal from '../../components/alertSucces'
 function multiplicacion (a, b) {
   return parseInt(a, 10) * parseInt(b, 10)
 }
-
-function calcularFechaProximoPago (idTipoCuota, today) {
-  const futureDate = new Date(today)
-  if (idTipoCuota === 1) {
-    futureDate.setDate(today.getDate() + 15)
-  } else if (idTipoCuota === 2) {
-    futureDate.setDate(today.getDate() + 30)
-  }
-  return dayjs(futureDate).format('YYYY-MM-DD')
-}
-
 function HomeVendedor () {
   const { user } = useUser()
-  const today = new Date()
   const [total, setTotal] = useState(0)
   const [prices, setPrices] = useState([])
   const [products, setProducts] = useState([])
@@ -40,8 +27,6 @@ function HomeVendedor () {
     selectProduct: '',
     cedula: '',
     cantidad: '',
-    cantidadCuotasFactura: '', // Se manejará como string pero se convertirá a entero
-    idTipoCuota: '', // Lo guardamos como string, pero lo convertimos a entero al usarlo
     productosFacturas: [],
     valorBrutoFactura: '',
     valorNetoFactura: '',
@@ -58,7 +43,6 @@ function HomeVendedor () {
   const [actualizar, setActualizar] = useState(false)
 
   const { data: productsData, error: productsError } = useDataPreload('/facturas/ver-products')
-  const { data: cuotasData, error: cuotasError } = useDataPreload('/facturas/ver-tipo-cuota')
   const { data: clientData, refetchData } = useDataPreload('cliente/todos/clientes')
 
   useEffect(() => {
@@ -76,10 +60,7 @@ function HomeVendedor () {
     if (productsError) {
       setErrores('Error fetching products:', productsError.message)
     }
-    if (cuotasError) {
-      setErrores('Error fetching tipo de cuota:', cuotasError.message)
-    }
-  }, [productsError, cuotasError])
+  }, [productsError])
 
   useEffect(() => {
     refetchData()
@@ -205,13 +186,6 @@ function HomeVendedor () {
     }))
   }, [prices])
 
-  useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      fechaProximoPago: calcularFechaProximoPago(formData.idTipoCuota, today)
-    }))
-  }, [formData.idTipoCuota, today])
-
   const columns = [
     { field: 'id', headerName: 'Id', width: 150 },
     { field: 'nombre', headerName: 'Productos', width: 150 },
@@ -231,10 +205,6 @@ function HomeVendedor () {
       setErrores('No ha seleccionado un cliente')
       return
     }
-    if (formData.idTipoCuota === '') {
-      setErrores('No ha seleccionado un tipo de cuota')
-      return
-    }
     try {
       const clientResponse = await api.get(`/cliente/${formData.cedula.id}`)
       const clientId = clientResponse.data.id
@@ -246,8 +216,7 @@ function HomeVendedor () {
         idCliente: clientId,
         correoUsuario: correo,
         nombreUsuario: primerNombre,
-        apellidoUsuario: primerApellido,
-        fechaProximoPago: calcularFechaProximoPago(formData.idTipoCuota, today)
+        apellidoUsuario: primerApellido
       }
 
       const facturaResponse = await api.post('/facturas/create', updatedFormData)
@@ -339,34 +308,6 @@ function HomeVendedor () {
                   <CustomModal bgColor='primary' tooltip='Agregar' text='Agregar Cliente' top={screenWidth <= 1400 ? '0%' : '15%'} left={screenWidth <= 1400 ? '15%' : '25%'} padding={0}>
                     <AgregarCliente setInfo={setInfo} setActualizar={setActualizar} className='justify-end' />
                   </CustomModal>
-                </Grid>
-                <Grid item xs={12}>
-                  <h1 className='text-center text-sky-800'>PAGOS</h1>
-                </Grid>
-                <Grid item xs={12}>
-                  <Input
-                    id='cantidadCuotasFactura'
-                    label='Numero de cuotas'
-                    name='cantidadCuotasFactura'
-                    type='number'
-                    onChange={handleChange}
-                    value={formData.cantidadCuotasFactura}
-                    required
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Select
-                    id='idTipoCuota'
-                    label='Tipo de cobro'
-                    name='idTipoCuota'
-                    onChange={handleChange}
-                    value={formData.idTipoCuota}
-                    items={cuotasData || []}
-                    required
-                    disabled={false}
-                    error={false}
-                    helperText='Seleccione una opción'
-                  />
                 </Grid>
                 <Grid item xs={12} container justifyContent='center'>
                   <button
