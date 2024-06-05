@@ -5,6 +5,7 @@ import Botonera from '../../components/groupButton'
 import DataTable from '../../components/dataTable'
 import CustomModal from '../../components/modalComponent'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
+import VerInformeCobrosComponent from '../../components/VerInformeCobros'
 
 import { api } from '../../utils/conection'
 import useSelectId from '../../hooks/useSelectId'
@@ -20,7 +21,43 @@ export default function InformeVentas () {
     { field: 'nombre', headerName: 'Nombre', width: 150 },
     { field: 'numero_documento_usuario', headerName: 'Documento', width: 150 },
     { field: 'correo_usuario', headerName: 'Correo', width: 210 },
-    { field: 'descripcion_zona', headerName: 'Zona', width: 140 }
+    { field: 'descripcion_zona', headerName: 'Zona', width: 140 },
+    {
+      field: 'total_ventas',
+      headerName: 'Total Ventas',
+      width: 120,
+      renderCell: (params) => (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          backgroundColor: 'green',
+          color: 'white',
+          borderRadius: '5px',
+          padding: '5px'
+        }}
+        >
+          {params.value}
+        </div>
+      )
+    },
+    {
+      field: 'total_cobros',
+      headerName: 'Total Cobros',
+      width: 120,
+      renderCell: (params) => (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          backgroundColor: 'blue',
+          color: 'white',
+          borderRadius: '5px',
+          padding: '5px'
+        }}
+        >
+          {params.value}
+        </div>
+      )
+    }
   ]
 
   useEffect(() => {
@@ -43,13 +80,13 @@ export default function InformeVentas () {
       <Sidebar />
       <StackCumston>
         <Botonera
-          title='Informes de ventas'
+          title='Informes de vendedor'
           ver={
             <CustomModal
               bgColor='success'
               icon={<RemoveRedEyeIcon className='w-6 h-6 mr-1' />}
-              tooltip='Visualizar'
-              text='Visualizar'
+              tooltip='Visualizar Ventas'
+              text='Visualizar Ventas'
               disabled={!selectId}
               padding={0}
               top={screenWidth <= 1400 ? '0%' : '15%'}
@@ -58,6 +95,20 @@ export default function InformeVentas () {
               <VerInformeVentasComponent id={selectId} />
             </CustomModal>
         }
+          eliminar={
+            <CustomModal
+              bgColor='success'
+              icon={<RemoveRedEyeIcon className='w-6 h-6 mr-1' />}
+              tooltip='Visualizar Cobros'
+              text='Visualizar Cobros'
+              disabled={!selectId}
+              padding={0}
+              top={screenWidth <= 1400 ? '0%' : '15%'}
+              left={screenWidth <= 1400 ? '15%' : '25%'}
+            >
+              <VerInformeCobrosComponent id={selectId} />
+            </CustomModal>
+      }
         />
         <DataTable rows={rows} columns={columns} selectId={(id) => saveSelectId(id)} />
       </StackCumston>
