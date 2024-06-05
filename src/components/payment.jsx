@@ -8,32 +8,46 @@ import { useUser } from '../utils/authContext'
 import useSelectId from '../hooks/useSelectId'
 import GenerarAbonos from './generarAbono'
 import AlertPrincipal from './alertSucces'
-import dayjs from 'dayjs'
 
 const columns = [
   { field: 'nombre_cliente', headerName: 'Cliente', width: 170 },
+  { field: 'numero_documento_cliente', headerName: 'Numero Documento', width: 170 },
+  { field: 'id', headerName: 'Factura', width: 110 },
   { field: 'direccion_cliente', headerName: 'Direccion', width: 200 },
   { field: 'telefono_cliente', headerName: 'Telefono', width: 110 },
-  { field: 'cuota_actual_factura', headerName: 'Cuota Actual', width: 120 },
+  { field: 'valor_neto_factura', headerName: 'Valor total factura', width: 160 },
   {
-    field: 'valor_pago',
-    headerName: 'Total a pagar',
+    field: 'pago_recibido',
+    headerName: 'Valor pagado',
     width: 120,
-    valueGetter: (params) => {
-      const valorNeto = parseFloat(params.row.valor_neto_factura)
-      const cantidadCuotas = parseFloat(params.row.cantidad_cuotas_factura)
-      return (valorNeto / cantidadCuotas).toFixed(2)
-    }
-  },
-  {
-    field: 'fecha_proximo_pago',
-    headerName: 'Fecha Pago',
-    width: 150,
     renderCell: (params) => (
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: params.value === dayjs().format('YYYY-MM-DD') ? 'green' : 'red',
+        backgroundColor: 'green',
+        color: 'white',
+        borderRadius: '5px',
+        padding: '5px'
+      }}
+      >
+        {params.value}
+      </div>
+    )
+  },
+  {
+    field: 'deuda',
+    headerName: 'Saldo pendiente',
+    width: 160,
+    valueGetter: (params) => {
+      const valorNeto = parseFloat(params.row.valor_neto_factura)
+      const valorPagado = parseFloat(params.row.pago_recibido)
+      return (valorNeto - valorPagado).toFixed(2)
+    },
+    renderCell: (params) => (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: 'red',
         color: 'white',
         borderRadius: '5px',
         padding: '5px'
