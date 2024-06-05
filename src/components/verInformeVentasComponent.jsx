@@ -1,12 +1,18 @@
-import { Alert, Fade, Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import useForm from '../hooks/UseForm'
 
 import { getDataById } from '../utils/getDataById'
-import DataTable from './dataTable'
 import InputDate from './dateComponent'
-import AnimacionSvg from './animacionSVG'
-import circle from '../assets/img/circle.png'
+
+import LogoDeuda from '../assets/img/deuda.png'
+import Pago from '../assets/img/payment.png'
+import Validado from '../assets/img/checked2.png'
+import Danger from '../assets/img/danger.png'
+import InfoIcon from '@mui/icons-material/Info'
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import Shop from '../assets/img/order.png'
 
 const defaultValues = {
   nombre_usuario: '',
@@ -15,12 +21,6 @@ const defaultValues = {
   infoFacturas: []
 }
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  { field: 'nombre_cliente', headerName: 'Nombre del Cliente', width: 230 },
-  { field: 'correo_cliente', headerName: 'Correo del Cliente', width: 210 },
-  { field: 'valor_neto_factura', headerName: 'Valor de la factura', width: 160 }
-]
 export default function VerInformeVentasComponent (porps) {
   const { id } = porps
   const { values, setValues } = useForm(defaultValues)
@@ -43,61 +43,93 @@ export default function VerInformeVentasComponent (porps) {
     }
     bringData()
   }, [fechaInforme])
+  function formatCop (value) {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP'
+    }).format(value)
+  }
   return (
-    <Grid container spacing={2} columns={12} className='max-w-[1250px] '>
-      <Grid item xs={12} sm={4}>
-        <div className='w-full h-full rounded-tl-lg rounded-bl-lg' style={{ position: 'relative', height: '100%' }}>
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 }}>
-            <div className='relative w-[240px] h-[270px] bg-white rounded-lg overflow-hidden'>
-              <div className='relative h-32 w-full'>
-                <div className='absolute w-[240px] h-[240px] rounded-full bg-nerve-light bottom-0' />
-                <div className='absolute w-36 h-36 bg-white p-1 rounded-full bottom-[-15%] left-1/2 transform -translate-x-1/2'>
-                  <img
-                    src={values.link_foto_usuario || circle}
-                    alt=''
-                    className='w-full h-full rounded-full object-cover'
-                  />
+    <>
+      <form className='rounded-lg'>
+        <div className='max-w-6xl mx-auto p-4'>
+          <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+            <div className='bg-red-200 shadow-lg rounded-lg p-6 flex items-center'>
+              <img src={LogoDeuda} alt='Logo Deuda' className='w-16 h-16 mr-4' />
+              <div>
+                <h2 className='text-xl font-semibold text-gray-700'>Saldo Pendiente</h2>
+                <div className='flex items-center'>
+
+                  <span className='text-2xl text-red-500 font-bold'>{`${formatCop(Number(values.totalVentas) - Number(values.totalCobros))}`}</span>
                 </div>
               </div>
-              <div className='h-52 px-5 pt-10 text-center'>
-                <h3 className='text-nerve-dark'>{values.nombre_usuario}</h3>
-                <h4 className='text-nerve-dark'>{values.correo_usuario}</h4>
-                <p className='mt-5 text-sm'>{values.telefono_usuario}</p>
+            </div>
+            <div className='bg-green-200 shadow-lg rounded-lg p-6 flex items-center'>
+              <img src={Pago} alt='Pago' className='w-16 h-16 mr-4' />
+              <div>
+                <h2 className='text-xl font-semibold text-gray-700'>Ventas Realizadas</h2>
+                <div className='flex items-center'>
+                  <AttachMoneyIcon className='text-green-500 mr-1' />
+                  <span className='text-2xl text-green-500 font-bold'>{formatCop(values.totalVentas)}</span>
+                </div>
               </div>
             </div>
-
+            <div className='bg-blue-200 shadow-lg rounded-lg p-6 flex items-center'>
+              <img src={Shop} alt='Compras' className='w-16 h-16 mr-4' />
+              <div>
+                <h2 className='text-xl font-semibold text-gray-700'>Cantidad Ventas</h2>
+                <div className='flex items-center'>
+                  <ShoppingCartIcon className='text-blue-500 mr-1' />
+                  <span className='text-2xl text-blue-500 font-bold'>{values.infoFacturas.length}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <AnimacionSvg />
+          <div className='mt-6'>
+            <p className='bg-blue-100 text-blue-400 p-4 rounded-lg flex items-center mb-5'>
+              <InfoIcon className='mr-2' />
+              <span>Si hay un ícono de check, el pago está completo; de lo contrario, se muestra un ícono de alerta.</span>
+            </p>
+            <p className='text-sm text-gray-500 mb-5'>Filtra las ventas por mes y año</p>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <InputDate
+                  id='fechaInforme'
+                  label='Fecha del reporte'
+                  name='fechaInforme'
+                  fecha={fechaInforme}
+                  onChange={(name, value) => {
+                    setFechaInforme(value)
+                  }}
+                  views={['month', 'year']}
+                  required
+                  disabled={false}
+                />
+              </Grid>
+            </Grid>
+          </div>
+          <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-scroll h-[400px] pb-3'>
+            {values.infoFacturas && values.infoFacturas.map(row => (
+              <div key={row.id} className='bg-white shadow-lg rounded-lg p-4 relative'>
+                {(Number(row.valor_neto_factura) === Number(row.pago_recibido))
+                  ? (
+                    <>
+                      <img src={Validado} alt='Pagado' className='w-20 h-20 absolute tpx-4  bottom-4 right-4 opacity-40' />
+                    </>
+                    )
+                  : (
+                    <>
+                      <img src={Danger} alt='Pagado' className='w-20 h-20 absolute tpx-4  bottom-4 right-4 opacity-40' />
+                    </>
+                    )}
+                <h3 className='text-lg font-semibold mb-2'>Factura ID: {row.id}</h3>
+                <p className='text-gray-700'><strong>Precio de la factura:</strong> {row.valor_neto_factura}</p>
+                <p className='text-gray-700'><strong>Pago recibido:</strong> {row.pago_recibido}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </Grid>
-      <Grid item xs={12} sm={8} className='pb-2'>
-        <h1 className='text-4xl text-center mt-3 mb-1 text-blue-fond font-bold'>Informe de vendedor</h1>
-        {mostrarAlerta &&
-          <Fade in={mostrarAlerta} timeout={300} className='mb-4'>
-            <Alert severity='error' variant='outlined' sx={{ width: '98%' }}>
-              {mensajeError}
-            </Alert>
-          </Fade>}
-        <Grid container spacing={2} columns={12} className='pl-2 pr-2 pb-1 pt-1 overflow-y-scroll h-[550px]'>
-          <Grid item xs={12} sm={12}>
-            <InputDate
-              id='fechaInforme'
-              label='Fecha del reporte'
-              name='fechaInforme'
-              fecha={fechaInforme}
-              onChange={(name, value) => {
-                setFechaInforme(value)
-              }}
-              views={['month', 'year']}
-              required
-              disabled={false}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12}>
-            <DataTable rows={values.infoFacturas} columns={columns} />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+      </form>
+    </>
   )
 }
