@@ -11,17 +11,16 @@ import { getDataById } from '../utils/getDataById'
 import { useUser } from '../utils/authContext'
 import AnimacionSvg from './animacionSVG'
 import useDataPreload from '../hooks/useDataReload'
-import dayjs from 'dayjs'
 
 const defautlValues = {
+  valorNetoFactura: '',
+  pagoRecibido: '',
+  nombreCliente: '',
+  correoCliente: '',
   entidadBancaria: '',
   idTipoTransaccion: '',
-  cuotasFactura: '',
-  numeroCuota: '',
-  cuotaActualFactura: '',
-  fechaProximoPago: '',
-  pagoFactura: '',
-  valorCuota: ''
+  valorPago: '',
+  valorMaximo: ''
 }
 
 export default function GenerarAbonos (props) {
@@ -42,7 +41,7 @@ export default function GenerarAbonos (props) {
           setMensajeError(todosDatos)
         } else {
           setDisabled(false)
-          setValues({ ...defautlValues, ...todosDatos, valorCuota: todosDatos.valorNetoFactura / todosDatos.cuotasFactura })
+          setValues({ ...defautlValues, ...todosDatos, valorMaximo: todosDatos.valorNetoFactura - todosDatos.pagoRecibido })
         }
       }
     }
@@ -53,20 +52,23 @@ export default function GenerarAbonos (props) {
     e.preventDefault()
     setValuesError(defautlValues)
     setMostrarAlerta(false)
+    if (values.valorPago > values.valorMaximo) {
+      setMensajeError('EL valor del pago no puede superar el valor maximo de pago')
+      setMostrarAlerta(true)
+      return
+    }
     try {
       const data = ({
         ...values,
         idFactura: id,
         idUsuario: user.id,
-        fechaProximoPago: values.idTipoCuota === '1'
-          ? dayjs().add(15, 'day').format('YYYY-MM-DD')
-          : dayjs().add(1, 'month').format('YYYY-MM-DD')
+        sumaPago: (Number(values.valorPago) + Number(values.pagoRecibido)).toString()
       })
       const response = await axios.post('http://localhost:4321/abonos/', data)
       setActualizar(prevValuesError => (
         !prevValuesError
       ))
-      setInfo(response.data.message)
+      setInfo(response.data)
       setDisabled(true)
     } catch (error) {
       let errorMessage = 'Error al editar el registro'
@@ -119,7 +121,6 @@ export default function GenerarAbonos (props) {
                 }}
               />
             </Grid>
-
             <Grid item xs={12} sm={12}>
               <Selects
                 id='idTipoTransaccion'
@@ -133,22 +134,33 @@ export default function GenerarAbonos (props) {
                 helperText={valuesError.idTipoTransaccion}
               />
             </Grid>
-
             <Grid item xs={12} sm={12}>
               <Input
-                id='cuotaActualFactura'
-                label='Cuota a Pagar'
-                name='cuotaActualFactura'
-                value={values.cuotaActualFactura}
-                disabled
+                id='valorPago'
+                label='Pago recibido'
+                name='valorPago'
+                value={values.valorPago}
+                onChange={handleInputChange}
+                error={recognizeEmptyName('valorPago')}
+                helperText={valuesError.valorPago}
+                disabled={disabled}
+                InputProps={{
+                  endAdornment: recognizeEmptyName('valorPago') && (
+                    <InputAdornment position='end'>
+                      <IconButton edge='end'>
+                        <ErrorOutlineIcon color='error' />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={12}>
               <Input
-                id='valorCuota'
-                label='Valor Cuota'
-                name='valorCuota'
-                value={values.valorCuota}
+                id='valorMaximo'
+                label='Pago maximo'
+                name='valorMaximo'
+                value={values.valorMaximo}
                 disabled
               />
             </Grid>
