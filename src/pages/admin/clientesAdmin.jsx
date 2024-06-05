@@ -12,11 +12,12 @@ import HistorialCompras from '../../components/verCompras'
 import AutocompleteComponent from '../../components/autocompletComponent'
 import useDataPreload from '../../hooks/useDataReload'
 
+
 const defaultValues = {
   numeroDocumento: ''
 }
 
-export default function ClientesAdmin () {
+export default function ClientesAdmin() {
   const [values, setValues] = useState(defaultValues)
   const [valuesError, setValuesError] = useState({})
   const [submitted, setSubmitted] = useState(false)
@@ -35,6 +36,13 @@ export default function ClientesAdmin () {
 
   const recognizeEmptyName = (name) => {
     return submitted && values[name] === ''
+  }
+
+  function formatCop(value) {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP'
+    }).format(value);
   }
 
   const handleSettingError = (name, error) => {
@@ -77,7 +85,6 @@ export default function ClientesAdmin () {
         console.error('Error fetching clientes:', error.message)
       }
     }
-
     fetchClientes()
   }, [])
 
@@ -135,12 +142,12 @@ export default function ClientesAdmin () {
                   {cliente.link_foto_cliente
                     ? (
                       <img src={cliente.link_foto_cliente} alt={`${cliente.primer_nombre_cliente} ${cliente.primer_apellido_cliente}`} className='w-16 h-16 rounded-full text-white' />
-                      )
+                    )
                     : (
                       <div className='w-16 h-16 rounded-full bg-yellow-500 flex items-center justify-center text-white text-2xl'>
                         {cliente.primer_nombre_cliente.charAt(0)}{cliente.primer_apellido_cliente.charAt(0)}
                       </div>
-                      )}
+                    )}
                   <div className='ml-4'>
                     <h3 className='text-lg font-semibold'>{cliente.primer_nombre_cliente} {cliente.primer_apellido_cliente}</h3>
                     <p className='text-gray-100'>{cliente.numero_documento_cliente}</p>
@@ -149,11 +156,22 @@ export default function ClientesAdmin () {
                 <p className='text-gray-100 mb-2'><strong>Correo:</strong> {cliente.correo_cliente}</p>
                 <p className='text-gray-100 mb-2'><strong>Dirección:</strong> {cliente.direccion_cliente}</p>
                 <p className='text-gray-100 mb-2'><strong>Teléfono:</strong> {cliente.telefono_cliente}</p>
-                <div className='absolute   bottom-0 left-0 right-0'>
+                <div className='text-center mt-5'>
+                  {cliente.deuda_total === 0 ? (
+                    <button className='bg-green-700 text-gray-800 font-bold py-2 px-4 rounded-full inline-flex items-center'>
+                      No tiene una deuda
+                    </button>
+                  ) : (
+                    <button className='bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded-full inline-flex items-center'>
+                      Deuda Total: {formatCop(cliente.deuda_total)}
+                    </button>
+                  )}
+                </div>
+                <div className='absolute bottom-0 left-0 right-0'>
                   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 300' className='w-full h-auto'>
                     <path fill='#ffffff' fillOpacity='1' d='M0,288L40,250.7C80,213,160,139,240,144C320,149,400,235,480,240C560,245,640,171,720,160C800,149,880,203,960,192C1040,181,1120,107,1200,101.3C1280,96,1360,160,1400,192L1440,224L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z' />
                     <foreignObject x='0' y='220' width='100%' height='200'>
-                      <div className='flex justify-center mt-2 gap-20 ' xmlns='http://www.w3.org/1999/xhtml'>
+                      <div className='flex justify-center mt-2 gap-20' xmlns='http://www.w3.org/1999/xhtml'>
                         <IconButton className='text-white mx-4' style={{ transform: 'scale(2.0)' }}>
                           <CustomModal
                             icon={<ShoppingBagOutlinedIcon />} bgColor='success' tooltip='Historial de compra' padding={0}
