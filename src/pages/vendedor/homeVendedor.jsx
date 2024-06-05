@@ -13,6 +13,7 @@ import AgregarCliente from '../../components/CrearCliente'
 import CustomModal from '../../components/modalComponent'
 import AutocompleteComponent from '../../components/autocompletComponent'
 import AlertPrincipal from '../../components/alertSucces'
+import { generarPdf } from '../../utils/generarFactura'
 
 function multiplicacion (a, b) {
   return parseInt(a, 10) * parseInt(b, 10)
@@ -227,7 +228,15 @@ function HomeVendedor () {
         setErrores('Error al crear factura. Detalles:', facturaResponse.data)
       }
 
-      const facturaResponseSend = await api.post('/facturas/send-factura', updatedFormData)
+      const pdf = generarPdf({ ...updatedFormData, vendedor: user.primer_nombre_usuario + ' ' + user.primer_apellido_usuario, telefonoCliente: clientResponse.data.telefono_cliente, direccionCliente: clientResponse.data.direccion_cliente, idFactura: facturaResponse.data.message })
+      const dataArchivo = new FormData()
+
+      for (const key in updatedFormData) {
+        dataArchivo.append(key, updatedFormData[key])
+      }
+      dataArchivo.append('archivo', pdf, 'factura.pdf')
+
+      const facturaResponseSend = await api.post('/facturas/send-factura', dataArchivo)
       console.log('Respuesta de la creación de factura:', facturaResponseSend)
       if (facturaResponseSend.status === 200) {
         setInfo('Factura creada exitosamente!')
