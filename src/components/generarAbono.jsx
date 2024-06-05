@@ -90,7 +90,7 @@ export default function GenerarAbonos (props) {
           </div>
         </Grid>
         <Grid item xs={12} sm={7} className='pb-2'>
-          <h1 className='text-4xl text-center mt-3 mb-1 text-blue-fond font-bold'>Generar Abonos</h1>
+          <h1 className='text-3xl text-center mt-3 mb-1 font-semibold text-gray-500'>Generar Abonos</h1>
           {mostrarAlerta &&
             <Fade in={mostrarAlerta} timeout={300} className='mb-4'>
               <Alert severity='error' variant='outlined' sx={{ width: '98%' }}>
@@ -156,7 +156,7 @@ export default function GenerarAbonos (props) {
               <button
                 type='button'
                 onClick={generatePayment}
-                className='w-full inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-sky-600 leading-normal text-xs ease-in tracking-tight-rem shadow-xs bg-150 bg-x-25 hover:-translate-y-px active:opacity-85 hover:shadow-md'
+                className={`w-full inline-block px-6 py-3 bg-gray-800 text-white rounded-lg  hover:bg-gray-700 transition duration-300 ease-in-out font-semibold hover:-translate-y-px active:opacity-85 hover:shadow-md ${disabled ? 'opacity-50' : ''}`}
               >
                 Registrar
               </button>

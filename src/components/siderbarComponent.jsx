@@ -1,37 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../utils/authContext';
-import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
-import FileOpenOutlinedIcon from '@mui/icons-material/FileOpenOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import TravelExploreOutlinedIcon from '@mui/icons-material/TravelExploreOutlined';
-import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
-import PlagiarismOutlinedIcon from '@mui/icons-material/PlagiarismOutlined';
-import { motion } from 'framer-motion';
-import Logo from '../assets/img/FTM.2.png';
-import Logo1 from '../assets/img/FTM.png';
+import React, { useState, useEffect } from 'react'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
+import { useUser } from '../utils/authContext'
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined'
+import FileOpenOutlinedIcon from '@mui/icons-material/FileOpenOutlined'
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined'
+import TravelExploreOutlinedIcon from '@mui/icons-material/TravelExploreOutlined'
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined'
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
+import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined'
+import PlagiarismOutlinedIcon from '@mui/icons-material/PlagiarismOutlined'
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { motion } from 'framer-motion'
+import Logo from '../assets/img/FTM.2.png'
+import Logo1 from '../assets/img/FTM.png'
 
-function Sidebar() {
-  const { user, setUser } = useUser();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [activeItem, setActiveItem] = useState(location.pathname);
+function Sidebar () {
+  const { user, setUser } = useUser()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [activeItem, setActiveItem] = useState(location.pathname)
 
   useEffect(() => {
-    setActiveItem(location.pathname);
-  }, [location.pathname]);
+    setActiveItem(location.pathname)
+  }, [location.pathname])
 
   const cerrarSession = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    navigate('/');
-  };
+    setUser(null)
+    localStorage.removeItem('user')
+    navigate('/')
+  }
 
   const linkClasses = (path) =>
     `font-medium text-sm py-2.5 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105 ${activeItem === path ? 'bg-gray-800 text-white' : 'text-gray-900 hover:bg-gray-800 hover:text-white'
-    }`;
+    }`
 
   return (
     <>
@@ -180,6 +181,22 @@ function Sidebar() {
                       Informes
                     </Link>
                   </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    whileHover={{ scale: 1.08 }}
+                  >
+                    <Link
+                      to='/clientesZona'
+                      className={linkClasses('/clientesZona')}
+                    >
+                      <motion.div whileHover={{ rotate: 20 }}>
+                        <TravelExploreIcon className='mr-4' />
+                      </motion.div>
+                      Clientes en zona
+                    </Link>
+                  </motion.div>
                 </>
               )}
 
@@ -206,7 +223,7 @@ function Sidebar() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default Sidebar;
+export default Sidebar

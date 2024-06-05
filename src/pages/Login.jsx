@@ -137,9 +137,10 @@ function Login () {
                   >
                     Login
                   </button>
-                  <div className='flex justify-end mt-5 w-full'>
-                    <LockIcon className='text-gray-500 mr-2' />
-                    <Link to='/recuperar-password_usuario' className='text-gray-500 hover:underline'>Recuperar Contraseña</Link>
+
+                  <div className='flex justify-end mt-5 pb-10 w-full'>
+                    {/* <LockIcon className='text-gray-500 mr-2' />
+                    <Link to='/recuperar-password_usuario' className='text-gray-500 hover:underline'>Recuperar Contraseña</Link> */}
                   </div>
                   {isLoading && ( // Muestra el indicador de carga mientras se está autenticando
                     <div className='flex justify-center mt-5'>

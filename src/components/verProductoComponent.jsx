@@ -38,7 +38,7 @@ export default function VerProductosComponent (props) {
           </div>
         </Grid>
         <Grid item xs={12} sm={7} className='pb-2'>
-          <h1 className='text-4xl text-center mt-3 mb-1 mr-8 text-blue-fond font-bold'>Informacion de tu producto</h1>
+          <h1 className='text-3xl text-center mt-3 mb-1 font-semibold text-gray-500'>Informacion de tu producto</h1>
           <Grid container spacing={2} columns={12} className='pl-2 pr-5 pb-1 pt-2'>
             <Grid item xs={12} sm={12}>
               <Input
