@@ -27,15 +27,14 @@ const columns = [
         valueGetter: (params) => `${params.row.nombre_cliente} ${params.row.apellido_cliente}`
     },
     { field: 'id', headerName: 'Numero Factura', width: 150 },
-    { field: 'numero_cuota', headerName: 'Cuota', width: 100 },
-    { field: 'valor_cuota', headerName: 'Valor Cuota', width: 100 },
-    { field: 'entidad_bancaria', headerName: 'Banco', width: 150 },
+    { field: 'valor_pago', headerName: 'valor del pago', width: 150 },
+    { field: 'banco_pago', headerName: 'Banco', width: 150 },
     {
         field: 'fecha_transaccion', headerName: 'Fecha Pago', width: 130,
         valueGetter: (params) => `${dayjs(params.row.fecha_transaccion).format('MM-DD-YYYY')}`
     },
     {
-        field: 'estado_transaccion',
+        field: 'estado_pago',
         headerName: 'Estado',
         width: 100,
         renderCell: (params) => (
@@ -50,7 +49,9 @@ const columns = [
                 {params.value === 1 ? 'Pagado' : 'Pendiente'}
             </div>
         )
+
     }
+
 ];
 
 
