@@ -38,6 +38,7 @@ function HomeVendedor () {
     nombreUsuario: '',
     apellidoUsuario: ''
   })
+  const [disabled, setDisabled] = useState(false)
   const [info, setInfo] = useState('')
   const [errores, setErrores] = useState('')
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
@@ -195,15 +196,18 @@ function HomeVendedor () {
   ]
 
   const handleSubmit = async (event) => {
+    setDisabled(true)
     event.preventDefault()
     setErrores('')
     setInfo('')
     if (formData.productosFacturas.length === 0) {
       setErrores('No se puede crear una factura sin productos')
+      setDisabled(false)
       return
     }
     if (formData.cedula === '' || formData.cedula === null) {
       setErrores('No ha seleccionado un cliente')
+      setDisabled(false)
       return
     }
     try {
@@ -246,7 +250,27 @@ function HomeVendedor () {
 
       // eslint-disable-next-line no-undef
       setInfo('Enviado')
+      setDisabled(false)
+      setFormData({
+        selectProduct: '',
+        cedula: '',
+        cantidad: '',
+        productosFacturas: [],
+        valorBrutoFactura: '',
+        valorNetoFactura: '',
+        fechaProximoPago: '',
+        idUsuario: user.id,
+        idCliente: '',
+        correoUsuario: '',
+        nombreUsuario: '',
+        apellidoUsuario: ''
+      })
+      setProducts([])
+      setIva(0)
+      setTotal(0)
+      setPrices([])
     } catch (error) {
+      setDisabled(false)
       setErrores('Error creando factura:', error.message)
     }
   }
@@ -321,7 +345,8 @@ function HomeVendedor () {
                 <Grid item xs={12} container justifyContent='center'>
                   <button
                     type='submit'
-                    className='w-full inline-block px-6 py-3 bg-gray-800 text-white rounded-lg  hover:bg-gray-700 transition duration-300 ease-in-out font-semibold hover:-translate-y-px active:opacity-85 hover:shadow-md '
+                    className={`w-full inline-block px-6 py-3 bg-gray-800 text-white rounded-lg  hover:bg-gray-700 transition duration-300 ease-in-out font-semibold hover:-translate-y-px active:opacity-85 hover:shadow-md ${disabled ? 'opacity-50' : ''}`}
+                    disabled={disabled}
                   >
                     Enviar
                   </button>
