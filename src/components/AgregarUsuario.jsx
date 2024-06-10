@@ -6,11 +6,11 @@ import { IconButton, InputAdornment, Grid, Alert, Fade } from '@mui/material'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Selects from '../components/selectComponent'
 import InputDate from '../components/dateComponent'
-import axios from 'axios'
 import { goOverErrors } from '../utils/goOverErros'
 import AvatarComponent from './cargaImagenes'
 import AnimacionSvg from './animacionSVG'
 import useDataPreload from '../hooks/useDataReload'
+import { api } from '../utils/conection'
 
 const defautlvalues = {
   primerNombreUsuario: '',
@@ -47,7 +47,7 @@ export default function AgregarEmpleados (props) {
     }
     if (buffer) formData.append('archivo', buffer)
     try {
-      const response = await axios.post('http://localhost:4321/usuarios', formData)
+      const response = await api.post('usuarios', formData)
       setActualizar(prevValuesError => (
         !prevValuesError
       ))

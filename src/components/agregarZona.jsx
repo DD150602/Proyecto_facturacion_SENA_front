@@ -4,9 +4,9 @@ import useFormErrors from '../hooks/UseErrorForm'
 import { Grid, TextField, InputAdornment, IconButton, Snackbar, Alert, Fade } from '@mui/material'
 import useForm from '../hooks/UseForm'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import axios from 'axios'
 import { goOverErrors } from '../utils/goOverErros'
 import AnimacionSvg from './animacionSVG'
+import { api } from '../utils/conection'
 
 const defaultValues = {
   nombreZona: '',
@@ -26,7 +26,7 @@ export default function AgregarZona (props) {
     setValuesError(defaultValues)
     setGeneralError('')
     try {
-      const response = await axios.post('http://localhost:4321/zona/crear_zona', values)
+      const response = await api.post('zona/crear_zona', values)
       setSnackbarMessage(response.data.message || 'Zona agregada con éxito')
       setOpenSnackbar(true)
       setActualizar(prevValuesError => (

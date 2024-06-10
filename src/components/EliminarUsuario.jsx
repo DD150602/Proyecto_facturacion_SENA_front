@@ -4,7 +4,7 @@ import useFormErrors from '../hooks/UseErrorForm'
 import useForm from '../hooks/UseForm'
 import { IconButton, InputAdornment, Grid, Alert, Fade } from '@mui/material'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import axios from 'axios'
+import { api } from '../utils/conection'
 import { goOverErrors } from '../utils/goOverErros'
 import AnimacionSvg from './animacionSVG'
 import AutocompleteComponent from './autocompletComponent'
@@ -39,7 +39,7 @@ export default function EliminarEmpleados (props) {
         ...values,
         idUserRemplazo: values.idUserRemplazo?.id
       }
-      const response = await axios.patch(`http://localhost:4321/usuarios/desabilitar/${id}`, dataToSend)
+      const response = await api.patch(`usuarios/desabilitar/${id}`, dataToSend)
       setActualizar(prevValuesError => (
         !prevValuesError
       ))

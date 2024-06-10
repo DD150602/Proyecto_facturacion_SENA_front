@@ -5,7 +5,7 @@ import useForm from '../hooks/UseForm'
 import { IconButton, InputAdornment, Grid, Alert, Fade } from '@mui/material'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Selects from '../components/selectComponent'
-import axios from 'axios'
+import { api } from '../utils/conection'
 import { goOverErrors } from '../utils/goOverErros'
 import { useUser } from '../utils/authContext'
 import AvatarComponent from './cargaImagenes'
@@ -49,7 +49,7 @@ export default function AgregarCliente (props) {
     formData.append('idZona', user.id_zona)
     if (buffer) formData.append('archivo', buffer)
     try {
-      const response = await axios.post('http://localhost:4321/cliente', formData)
+      const response = await api.post('cliente', formData)
       setActualizar(prevValuesError => (
         !prevValuesError
       ))

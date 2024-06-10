@@ -5,19 +5,18 @@ import { Stack, Snackbar, Alert, IconButton } from '@mui/material'
 import YoutubeSearchedForIcon from '@mui/icons-material/YoutubeSearchedFor'
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined'
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
-import axios from 'axios'
+import { api } from '../../utils/conection'
 import CustomModal from '../../components/modalComponent'
 import EditarCliente from '../../components/editarCliente'
 import HistorialCompras from '../../components/verCompras'
 import AutocompleteComponent from '../../components/autocompletComponent'
 import useDataPreload from '../../hooks/useDataReload'
 
-
 const defaultValues = {
   numeroDocumento: ''
 }
 
-export default function ClientesAdmin() {
+export default function ClientesAdmin () {
   const [values, setValues] = useState(defaultValues)
   const [valuesError, setValuesError] = useState({})
   const [submitted, setSubmitted] = useState(false)
@@ -38,11 +37,11 @@ export default function ClientesAdmin() {
     return submitted && values[name] === ''
   }
 
-  function formatCop(value) {
+  function formatCop (value) {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP'
-    }).format(value);
+    }).format(value)
   }
 
   const handleSettingError = (name, error) => {
@@ -78,7 +77,7 @@ export default function ClientesAdmin() {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await axios.get('http://localhost:4321/gestion_cliente')
+        const response = await api.get('gestion_cliente')
         setClientes(response.data)
         setFilteredClientes(response.data)
       } catch (error) {
@@ -142,12 +141,12 @@ export default function ClientesAdmin() {
                   {cliente.link_foto_cliente
                     ? (
                       <img src={cliente.link_foto_cliente} alt={`${cliente.primer_nombre_cliente} ${cliente.primer_apellido_cliente}`} className='w-16 h-16 rounded-full text-white' />
-                    )
+                      )
                     : (
                       <div className='w-16 h-16 rounded-full bg-yellow-500 flex items-center justify-center text-white text-2xl'>
                         {cliente.primer_nombre_cliente.charAt(0)}{cliente.primer_apellido_cliente.charAt(0)}
                       </div>
-                    )}
+                      )}
                   <div className='ml-4'>
                     <h3 className='text-lg font-semibold'>{cliente.primer_nombre_cliente} {cliente.primer_apellido_cliente}</h3>
                     <p className='text-gray-100'>{cliente.numero_documento_cliente}</p>
@@ -157,15 +156,17 @@ export default function ClientesAdmin() {
                 <p className='text-gray-100 mb-2'><strong>Dirección:</strong> {cliente.direccion_cliente}</p>
                 <p className='text-gray-100 mb-2'><strong>Teléfono:</strong> {cliente.telefono_cliente}</p>
                 <div className='text-center mt-5'>
-                  {cliente.deuda_total === 0 ? (
-                    <button className='bg-green-700 text-gray-800 font-bold py-2 px-4 rounded-full inline-flex items-center'>
-                      No tiene una deuda
-                    </button>
-                  ) : (
-                    <button className='bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded-full inline-flex items-center'>
-                      Deuda Total: {formatCop(cliente.deuda_total)}
-                    </button>
-                  )}
+                  {cliente.deuda_total === 0
+                    ? (
+                      <button className='bg-green-700 text-gray-800 font-bold py-2 px-4 rounded-full inline-flex items-center'>
+                        No tiene una deuda
+                      </button>
+                      )
+                    : (
+                      <button className='bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded-full inline-flex items-center'>
+                        Deuda Total: {formatCop(cliente.deuda_total)}
+                      </button>
+                      )}
                 </div>
                 <div className='absolute bottom-0 left-0 right-0'>
                   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 300' className='w-full h-auto'>

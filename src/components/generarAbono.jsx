@@ -5,7 +5,7 @@ import useForm from '../hooks/UseForm'
 import { IconButton, InputAdornment, Grid, Alert, Fade } from '@mui/material'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Selects from '../components/selectComponent'
-import axios from 'axios'
+import { api } from '../utils/conection'
 import { goOverErrors } from '../utils/goOverErros'
 import { getDataById } from '../utils/getDataById'
 import { useUser } from '../utils/authContext'
@@ -64,7 +64,7 @@ export default function GenerarAbonos (props) {
         idUsuario: user.id,
         sumaPago: (Number(values.valorPago) + Number(values.pagoRecibido)).toString()
       })
-      const response = await axios.post('http://localhost:4321/abonos/', data)
+      const response = await api.post('abonos/', data)
       setActualizar(prevValuesError => (
         !prevValuesError
       ))

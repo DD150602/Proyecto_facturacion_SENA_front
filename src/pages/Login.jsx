@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import { api } from '../utils/conection'
 import { IconButton, InputAdornment, Alert, CircularProgress } from '@mui/material' // Importa CircularProgress para el indicador de carga
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { Link, useNavigate } from 'react-router-dom'
-import LockIcon from '@mui/icons-material/Lock'
+import { useNavigate } from 'react-router-dom'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { useUser } from '../utils/authContext'
 import logo from '../assets/img/FTM.2.png'
@@ -35,7 +34,7 @@ function Login () {
     setValuesError(defautlvalues)
     setIsLoading(true) // Muestra el indicador de carga al iniciar sesión
     try {
-      const response = await axios.post('http://localhost:4321/login', { correo_usuario: values.correo_usuario, password_usuario: values.password_usuario })
+      const response = await api.post('login', { correo_usuario: values.correo_usuario, password_usuario: values.password_usuario })
       const { user } = response.data
       setUser(user)
 

@@ -4,7 +4,7 @@ import useFormErrors from '../hooks/UseErrorForm'
 import useForm from '../hooks/UseForm'
 import { IconButton, InputAdornment, Grid, Alert, Snackbar, Fade } from '@mui/material'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import axios from 'axios'
+import { api } from '../utils/conection'
 import { goOverErrors } from '../utils/goOverErros'
 import AnimacionSvg from './animacionSVG'
 
@@ -30,7 +30,7 @@ export default function EditarCliente ({ id }) {
   useEffect(() => {
     const dataCliente = async () => {
       try {
-        const response = await axios.get(`http://localhost:4321/gestion_cliente/get_cliente/${id}`)
+        const response = await api.get(`gestion_cliente/get_cliente/${id}`)
         setDisabled(false)
         setValues({
           primer_nombre_cliente: response.data[0].primer_nombre_cliente,
@@ -63,7 +63,7 @@ export default function EditarCliente ({ id }) {
     setValuesError(defautlvalues)
     setMostrarAlerta(false)
     try {
-      const response = await axios.patch(`http://localhost:4321/gestion_cliente/update_cliente/${id}`, values)
+      const response = await api.patch(`gestion_cliente/update_cliente/${id}`, values)
       if (response.data.message === 'Actualizacion con exito') {
         showSnackbar(response.data.message)
       }

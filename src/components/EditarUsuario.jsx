@@ -6,7 +6,7 @@ import { IconButton, InputAdornment, Grid, Alert, Fade } from '@mui/material'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Selects from '../components/selectComponent'
 import InputDate from '../components/dateComponent'
-import axios from 'axios'
+import { api } from '../utils/conection'
 import { goOverErrors } from '../utils/goOverErros'
 import { getDataById } from '../utils/getDataById'
 import AvatarComponent from './cargaImagenes'
@@ -67,7 +67,7 @@ export default function EditarEmpleados (props) {
     }
     if (buffer) formData.append('archivo', buffer)
     try {
-      const response = await axios.patch(`http://localhost:4321/usuarios/${values.id}`, formData)
+      const response = await api.patch(`usuarios/${values.id}`, formData)
       setActualizar(prevValuesError => (
         !prevValuesError
       ))

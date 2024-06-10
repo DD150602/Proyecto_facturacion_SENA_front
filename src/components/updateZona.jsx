@@ -4,7 +4,7 @@ import useFormErrors from '../hooks/UseErrorForm'
 import { Grid, TextField, InputAdornment, IconButton, Snackbar, Alert, Fade } from '@mui/material'
 import useForm from '../hooks/UseForm'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import axios from 'axios'
+import { api } from '../utils/conection'
 import { goOverErrors } from '../utils/goOverErros'
 import AnimacionSvg from './animacionSVG'
 
@@ -24,7 +24,7 @@ export default function UpdateZona ({ id, setActualizar }) {
   useEffect(() => {
     const fetchZoneData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4321/zona/${id}`)
+        const response = await api.get(`zona/${id}`)
         setValues({
           nombreZona: response.data[0].nombre_zona,
           descripcionZona: response.data[0].descripcion_zona
@@ -44,7 +44,7 @@ export default function UpdateZona ({ id, setActualizar }) {
     setGeneralError('')
     setDisabled(true)
     try {
-      const response = await axios.patch(`http://localhost:4321/zona/update_zona/${id}`, values)
+      const response = await api.patch(`zona/update_zona/${id}`, values)
       setSnackbarMessage(response.data.message || 'Zona actualizada con éxito')
       setOpenSnackbar(true)
       setActualizar(prevValuesError => (
