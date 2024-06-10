@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Alert, Fade, Grid } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import useForm from '../hooks/UseForm'
 
@@ -68,6 +68,12 @@ export default function VerInformeCobrosComponent (porps) {
               <InfoIcon className='mr-2' />
               <span>Si hay un ícono de check, el pago fue aprovado; de lo contrario, se muestra un ícono de alerta.</span>
             </p>
+            {mostrarAlerta &&
+              <Fade in={mostrarAlerta} timeout={300} className='mb-4'>
+                <Alert severity='error' variant='outlined' sx={{ width: '98%' }}>
+                  {mensajeError}
+                </Alert>
+              </Fade>}
             <p className='text-sm text-gray-500 mb-5'>Filtra las ventas por mes y año</p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
