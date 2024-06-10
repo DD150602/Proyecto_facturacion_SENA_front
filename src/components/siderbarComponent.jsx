@@ -9,7 +9,7 @@ import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined'
 import PlagiarismOutlinedIcon from '@mui/icons-material/PlagiarismOutlined'
-import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import TravelExploreIcon from '@mui/icons-material/TravelExplore'
 import { motion } from 'framer-motion'
 import Logo from '../assets/img/FTM.2.png'
 import Logo1 from '../assets/img/FTM.png'
@@ -26,6 +26,7 @@ function Sidebar () {
 
   const cerrarSession = () => {
     setUser(null)
+    // eslint-disable-next-line no-undef
     localStorage.removeItem('user')
     navigate('/')
   }
