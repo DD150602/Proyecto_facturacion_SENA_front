@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 
 export const generarPdf = (datos) => {
   console.log(datos)
+  // eslint-disable-next-line new-cap
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
