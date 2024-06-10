@@ -4,7 +4,6 @@ import StackCumston from '../../components/stackComponent'
 import Botonera from '../../components/groupButton'
 import DataTable from '../../components/dataTable'
 import { api } from '../../utils/conection'
-import useSelectId from '../../hooks/useSelectId'
 import AlertPrincipal from '../../components/alertSucces'
 import { useUser } from '../../utils/authContext'
 
@@ -14,7 +13,6 @@ export default function ClientesZona () {
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
 
-  const { selectId, saveSelectId } = useSelectId()
   const columns = [
     { field: 'label', headerName: 'Nombre', width: 150 },
     { field: 'numero_documento_cliente', headerName: 'Numero Documento', width: 200 },
@@ -25,7 +23,10 @@ export default function ClientesZona () {
 
   useEffect(() => {
     api.get(`/cliente/contacto/${user.id_zona}`)
-      .then((res) => setRows(res.data))
+      .then((res) => {
+        setRows(res.data)
+        setSuccess('Datos correctamente cargados')
+      })
       .catch((error) => {
         setError(error.response.data.message)
         setRows([])
