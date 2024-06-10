@@ -8,7 +8,7 @@ import CreateIcon from '@mui/icons-material/Create'
 import AgregarZona from '../../components/agregarZona'
 import Input from '../../components/InputComponent'
 import YoutubeSearchedForIcon from '@mui/icons-material/YoutubeSearchedFor'
-import { Stack, InputAdornment, IconButton, Snackbar, Alert, Grid, Box } from '@mui/material'
+import { Stack, InputAdornment, IconButton, Snackbar, Alert, Grid, Box, Tooltip } from '@mui/material'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import LogoUser from '../../assets/img/circle.png'
 import LogoCheck from '../../assets/img/check(1).png'
@@ -123,8 +123,8 @@ export default function ZonasAdmin () {
       <StackCumston>
         <Botonera
           title='Gestiona tus zonas'
-          agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar' text='Agregar' padding={0}><AgregarZona setActualizar={setActualizar} /></CustomModal>}
-          editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar' text='Editar' disabled={!selectedZonas} padding={0}><UpdateZona id={selectedZonas} setActualizar={setActualizar} /></CustomModal>}
+          agregar={<CustomModal bgColor='primary' icon={<AddIcon className='w-6 h-6 mr-1' />} tooltip='Agregar Zona' text='Agregar' padding={0}><AgregarZona setActualizar={setActualizar} /></CustomModal>}
+          editar={<CustomModal bgColor='secondary' icon={<CreateIcon className='w-6 h-6 mr-1' />} tooltip='Editar Zona' text='Editar' disabled={!selectedZonas} padding={0}><UpdateZona id={selectedZonas} setActualizar={setActualizar} /></CustomModal>}
         />
         <div className='flex flex-col md:flex-row items-start'>
           <div className='w-full md:w-1/2 px-4'>
@@ -155,7 +155,7 @@ export default function ZonasAdmin () {
                     type='submit'
                     className='w-full md:w-1/2 bg-gray-800 text-white rounded-lg py-3 px-6 hover:bg-gray-700 transition duration-300 ease-in-out font-semibold'
                   >
-                    BUSCAR <YoutubeSearchedForIcon />
+                    Buscar <YoutubeSearchedForIcon />
                   </button>
                 </Stack>
               </Stack>
@@ -215,12 +215,15 @@ export default function ZonasAdmin () {
 
             </div>
             <div className='flex justify-center mt-3'>
-              <button
-                className='bg-gray-800 text-white rounded-lg py-3 px-6 hover:bg-gray-700 transition duration-300 ease-in-out font-semibold'
-                onClick={handleZonafromUser}
-              >
-                Vincular <YoutubeSearchedForIcon />
-              </button>
+              <Tooltip title='Vincular zona'>
+                <button
+                  className='bg-gray-800 text-white rounded-lg py-3 px-6 hover:bg-gray-700 transition duration-300 ease-in-out font-semibold'
+                  onClick={handleZonafromUser}
+                >
+                  Vincular <YoutubeSearchedForIcon />
+                </button>
+
+              </Tooltip>
             </div>
           </div>
 
