@@ -16,8 +16,7 @@ import LogoZonas from '../../assets/img/store.png'
 import UpdateZona from '../../components/updateZona'
 import Swal from 'sweetalert2'
 import AlertPrincipal from '../../components/alertSucces'
-
-import axios from 'axios'
+import { api } from '../../utils/conection'
 
 const defaultValues = {
   numeroDocumento: ''
@@ -57,7 +56,7 @@ export default function ZonasAdmin () {
     }
 
     try {
-      const response = await axios.get(`http://localhost:4321/zona/getUser/${values.numeroDocumento}`)
+      const response = await api.get(`zona/getUser/${values.numeroDocumento}`)
       setVendedor(response.data[0])
       setOpenSnackbar(true)
     } catch (error) {
@@ -82,7 +81,7 @@ export default function ZonasAdmin () {
       return
     }
     try {
-      const response = await axios.patch(`http://localhost:4321/zona/add_user/${vendedor.id}`, {
+      const response = await api.patch(`zona/add_user/${vendedor.id}`, {
         idZona: selectedZonas
       })
       console.log('Zona vinculada correctamente:', response.data)
@@ -108,7 +107,7 @@ export default function ZonasAdmin () {
   useEffect(() => {
     const fetchZonas = async () => {
       try {
-        const response = await axios.get('http://localhost:4321/zona')
+        const response = await api.get('zona')
         setZonas(response.data)
       } catch (error) {
         console.error('Erro al traer la zonas:', error)
